@@ -122,8 +122,7 @@ namespace OSM
                 Northing = Northing + 10000000;
             Northing = Math.Round(Northing * 100) * 0.01;
 
-            float resize = 1f;
-            return new Vector2((Convert.ToSingle(Easting) - Constants.XCorr) / resize, (-(Convert.ToSingle(Northing) - Constants.YCorr)) / resize);
+            return new Vector2((Convert.ToSingle(Easting) - Constants.XCorr) * Constants.Resize, (-(Convert.ToSingle(Northing) - Constants.YCorr)) * Constants.Resize);
         }
     }
 }

@@ -20,6 +20,10 @@ namespace OSM
 
         Texture2D t; //base for the line texture
 
+        bool showGrid = false;
+
+        KeyboardState keyboardOldState = new KeyboardState();
+
         public OSM()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -34,8 +38,8 @@ namespace OSM
             data = new OSMData();
 
             offset = data.buildings[Constants.rnd.Next(0, data.buildings.Count)][0];
-            offset.X = -offset.X;
-            offset.Y = -offset.Y;
+            offset.X = -(data.area.Center.X - graphics.PreferredBackBufferWidth / 2);
+            offset.Y = -(data.area.Center.Y - graphics.PreferredBackBufferHeight / 2);
         }
 
         /// <summary>
@@ -105,6 +109,13 @@ namespace OSM
                 offset.X += speed;
             }
 
+            if (keyboardState.IsKeyDown(Keys.G) && keyboardOldState.IsKeyUp(Keys.G))
+            {
+                showGrid = !showGrid;
+            }
+
+            keyboardOldState = keyboardState;
+
             base.Update(gameTime);
         }
 
@@ -118,6 +129,8 @@ namespace OSM
 
             Matrix Transform = Matrix.CreateTranslation(offset.X, offset.Y, 0);
             spriteBatch.Begin(transformMatrix: Transform);
+
+            //spriteBatch.Draw(t, data.area, Color.Black);
 
             foreach (var build in data.buildings)
             {
@@ -142,6 +155,27 @@ namespace OSM
             foreach (var node in data.nodes)
             {
                 spriteBatch.Draw(t, new Rectangle(Convert.ToInt32(node.X), Convert.ToInt32(node.Y), 3, 3), Color.DarkCyan);
+            }
+
+            //display grid
+            //TODO: 
+            if (showGrid)
+            {
+                var gridColor = Color.DarkGreen;
+                var gridThickness = 1;
+                for (float i = data.area.X; i <= data.area.Right; i += Constants.GridFrequency)
+                {
+                    Vector2 start = new Vector2(i, data.area.Y);
+                    Vector2 end = new Vector2(i, data.area.Bottom);
+                    DrawLine(spriteBatch, start, end, gridColor, gridThickness);
+                }
+                //TODO: understand why it blinking and disappears
+                for (float i = data.area.Y; i <= data.area.Bottom; i += Constants.GridFrequency)
+                {
+                    Vector2 start = new Vector2(data.area.X, i);
+                    Vector2 end = new Vector2(data.area.Right, i);
+                    DrawLine(spriteBatch, start, end, gridColor, gridThickness);
+                }
             }
 
             spriteBatch.End();

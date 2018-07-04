@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,10 +14,14 @@ namespace OSM
             XCorr = 0, 
             YCorr = 0;
 
+        //if this value is X, the grid lines will be at a distance of X pixels
+        public const float GridFrequency = 50;
+        public static Point AreaExtension { get; private set; } = new Point(1000, 1000); 
+
         //original size is 1
         public const float Resize = 1;
 
-        public static Random rnd = new Random();
+        public static Random rnd { get; private set; } = new Random();
 
         public const string OsmFilePath = @"maps/map.osm";
     }
