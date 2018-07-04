@@ -27,6 +27,9 @@ namespace OSM
 
             this.IsMouseVisible = true;
             this.Window.Position = new Point(200, 50);
+            graphics.PreferredBackBufferWidth = 1600;
+            graphics.PreferredBackBufferHeight = 900;
+            graphics.IsFullScreen = false;
 
             data = new OSMData();
 

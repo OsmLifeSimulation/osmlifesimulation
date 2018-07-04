@@ -19,7 +19,7 @@ namespace OSM
         public List<Vector2> nodes = new List<Vector2>();
         public OSMData()
         {
-            serializeXml();
+            deserializeXml();
 
             buildings = rawData.Way.Where(w => w.Tag.Exists(t => t.K == "building" && t.V == "yes"))
                 .Select(w => w.Nd.Select(n => MathExtensions.Deg2UTM(rawData.Node.First(node => node.Id == n.Ref))).ToList()).ToList();
@@ -30,7 +30,7 @@ namespace OSM
             nodes = rawData.Node.Where(n => n.Tag.Any()).Select(n => MathExtensions.Deg2UTM(n)).ToList();
         }
 
-        private void serializeXml()
+        private void deserializeXml()
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Osm));
             StreamReader reader = new StreamReader(Constants.OsmFilePath);
