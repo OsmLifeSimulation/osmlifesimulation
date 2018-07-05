@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using OSM.Structures;
 using System;
 using System.Linq;
 
@@ -37,7 +38,7 @@ namespace OSM
 
             data = new OSMData();
 
-            offset = data.buildings[Constants.rnd.Next(0, data.buildings.Count)][0];
+            //offset = data.buildingPoints[Constants.rnd.Next(0, data.buildingPoints.Count)][0];
             offset.X = -(data.area.Center.X - graphics.PreferredBackBufferWidth / 2);
             offset.Y = -(data.area.Center.Y - graphics.PreferredBackBufferHeight / 2);
         }
@@ -132,24 +133,14 @@ namespace OSM
 
             //spriteBatch.Draw(t, data.area, Color.Black);
 
-            foreach (var build in data.buildings)
+            foreach (var build in data.BuildingLines)
             {
-                for (int i = 0; i < build.Count; i++)
-                {
-                    int next = i == build.Count - 1 ? 0 : i + 1;
-                    DrawLine(spriteBatch, build[i], build[next], Color.SlateGray, 2);
-                }
+                DrawLine(spriteBatch, build, Color.SlateGray, 2);
             }
 
-            foreach (var road in data.roads)
+            foreach (var road in data.RoadLines)
             {
-                for (int i = 0; i < road.Count; i++)
-                {
-                    if (i != road.Count - 1)
-                    {
-                        DrawLine(spriteBatch, road[i], road[i + 1], Color.GhostWhite, 4);
-                    }
-                }
+                DrawLine(spriteBatch, road, Color.GhostWhite, 4);
             }
 
             foreach (var node in data.nodes)
@@ -157,24 +148,36 @@ namespace OSM
                 spriteBatch.Draw(t, new Rectangle(Convert.ToInt32(node.X), Convert.ToInt32(node.Y), 3, 3), Color.DarkCyan);
             }
 
+            //draw grid points
+            //foreach (var row in data.points)
+            //{
+            //    foreach (var point in row)
+            //    {
+            //        spriteBatch.Draw(t, new Rectangle(point.X - 1, point.Y - 1, 3, 3), Color.DarkCyan);
+            //    }
+            //}
+
             //display grid
-            //TODO: 
             if (showGrid)
             {
                 var gridColor = Color.DarkGreen;
                 var gridThickness = 1;
-                for (float i = data.area.X; i <= data.area.Right; i += Constants.GridFrequency)
+                foreach (var row in  data.MovementsGraph.Vertices)
                 {
-                    Vector2 start = new Vector2(i, data.area.Y);
-                    Vector2 end = new Vector2(i, data.area.Bottom);
+                    Vector2 start = new Vector2(data.area.X, row[0].Y);
+                    Vector2 end = new Vector2(data.area.Right, row[0].Y);
                     DrawLine(spriteBatch, start, end, gridColor, gridThickness);
                 }
-                //TODO: understand why it blinking and disappears
-                for (float i = data.area.Y; i <= data.area.Bottom; i += Constants.GridFrequency)
+                foreach (var point in data.MovementsGraph.Vertices[0])
                 {
-                    Vector2 start = new Vector2(data.area.X, i);
-                    Vector2 end = new Vector2(data.area.Right, i);
+                    Vector2 start = new Vector2(point.X, data.area.Y);
+                    Vector2 end = new Vector2(point.X, data.area.Bottom);
                     DrawLine(spriteBatch, start, end, gridColor, gridThickness);
+                }
+
+                foreach (var edge in data.MovementsGraph.BlockedEdges)
+                {
+                    DrawLine(spriteBatch, edge.Line, edge.IntersectsWith == LineType.building ? Color.Red : Color.Yellow, 1);
                 }
             }
 
@@ -183,6 +186,10 @@ namespace OSM
             base.Draw(gameTime);
         }
 
+        void DrawLine(SpriteBatch sb, Line line, Color color, int thickness)
+        {
+            DrawLine(sb, line.Start, line.End, color, thickness);
+        }
         void DrawLine(SpriteBatch sb, Vector2 start, Vector2 end, Color color, int thickness)
         {
             Vector2 edge = end - start;

@@ -15,7 +15,7 @@ namespace OSM
             YCorr = 0;
 
         //if this value is X, the grid lines will be at a distance of X pixels
-        public const float GridFrequency = 50;
+        public const int GridFrequency = 50;
         public static Point AreaExtension { get; private set; } = new Point(1000, 1000); 
 
         //original size is 1

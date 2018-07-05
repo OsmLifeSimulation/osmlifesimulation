@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using OSM.Structures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,33 @@ namespace OSM
 {
     public static class MathExtensions
     {
+        public static bool LinesIntersects(Line a, Line b)
+        {
+            return LinesIntersects(a.Start, a.End, b.Start, b.End);
+        }
+        // a1 is line1 start, a2 is line1 end, b1 is line2 start, b2 is line2 end
+        public static bool LinesIntersects(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
+        {
+            Vector2 b = a2 - a1;
+            Vector2 d = b2 - b1;
+            float bDotDPerp = b.X * d.Y - b.Y * d.X;
+
+            // if b dot d == 0, it means the lines are parallel so have infinite intersection points
+            if (bDotDPerp == 0)
+                return false;
+
+            Vector2 c = b1 - a1;
+            float t = (c.X * d.Y - c.Y * d.X) / bDotDPerp;
+            if (t < 0 || t > 1)
+                return false;
+
+            float u = (c.X * b.Y - c.Y * b.X) / bDotDPerp;
+            if (u < 0 || u > 1)
+                return false;
+
+            return true;
+        }
+
         private static double toRad(double val)
         {
             return val * (Math.PI / 180);
@@ -123,6 +151,28 @@ namespace OSM
             Northing = Math.Round(Northing * 100) * 0.01;
 
             return new Vector2((Convert.ToSingle(Easting) - Constants.XCorr) * Constants.Resize, (-(Convert.ToSingle(Northing) - Constants.YCorr)) * Constants.Resize);
+        }
+
+        public static IEnumerable<T> AdjacentElements<T>(List<List<T>> arr, int row, int column)
+        {
+            int rows = arr.Count;
+            int columns = arr[0].Count;
+
+            for (int j = row - 1; j <= row + 1; j++)
+                for (int i = column - 1; i <= column + 1; i++)
+                    if (i >= 0 && j >= 0 && i < columns && j < rows && !(j == row && i == column))
+                        yield return arr[j][i];
+        }
+
+        public static IEnumerable<T> AdjacentElements<T>(T[,] arr, int row, int column)
+        {
+            int rows = arr.GetLength(0);
+            int columns = arr.GetLength(1);
+
+            for (int j = row - 1; j <= row + 1; j++)
+                for (int i = column - 1; i <= column + 1; i++)
+                    if (i >= 0 && j >= 0 && i < columns && j < rows && !(j == row && i == column))
+                        yield return arr[j, i];
         }
     }
 }
