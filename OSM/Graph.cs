@@ -34,30 +34,36 @@ namespace OSM
                 for (int j = 0; j < Vertices[i].Count; j++)
                 {
                     var vertex = Vertices[i][j];
-                    var nearby = MathExtensions.AdjacentElements(Vertices, i, j).ToList();
+                    var nearby = MathExtensions.AdjacentBottomRightElements(Vertices, i, j).ToList();
 
                     foreach (var neighbor in nearby)
                     {
                         var edgeLine = new Line(vertex, neighbor);
+                        bool buildingFinded = false;
                         foreach (var line in buildingLines)
                         {
                             if (MathExtensions.LinesIntersects(edgeLine, line))
                             {
                                 BlockedEdges.Add(new GraphEdge(edgeLine, LineType.building));
+                                buildingFinded = true;
                                 break;
                             }
                         }
-                        foreach (var line in roadLines)
+                        if (!buildingFinded)
                         {
-                            if (MathExtensions.LinesIntersects(edgeLine, line))
+                            foreach (var line in roadLines)
                             {
-                                BlockedEdges.Add(new GraphEdge(edgeLine, LineType.road));
-                                break;
+                                if (MathExtensions.LinesIntersects(edgeLine, line))
+                                {
+                                    BlockedEdges.Add(new GraphEdge(edgeLine, LineType.road));
+                                    break;
+                                }
                             }
                         }
                     }
                 }
             }
+
         }
 
     }
@@ -70,6 +76,17 @@ namespace OSM
         {
             Line = line;
             IntersectsWith = intersectsWith;
+        }
+
+        public static bool operator !=(GraphEdge left, GraphEdge right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator ==(GraphEdge left, GraphEdge right)
+        {
+            return (left.Line.Start == right.Line.Start && left.Line.End == right.Line.End) ||
+                (left.Line.Start == right.Line.End && left.Line.End == right.Line.Start);
         }
     }
 }

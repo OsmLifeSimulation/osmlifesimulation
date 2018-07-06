@@ -153,13 +153,13 @@ namespace OSM
             return new Vector2((Convert.ToSingle(Easting) - Constants.XCorr) * Constants.Resize, (-(Convert.ToSingle(Northing) - Constants.YCorr)) * Constants.Resize);
         }
 
-        public static IEnumerable<T> AdjacentElements<T>(List<List<T>> arr, int row, int column)
+        public static IEnumerable<T> AdjacentBottomRightElements<T>(List<List<T>> arr, int row, int column)
         {
             int rows = arr.Count;
             int columns = arr[0].Count;
 
-            for (int j = row - 1; j <= row + 1; j++)
-                for (int i = column - 1; i <= column + 1; i++)
+            for (int j = row/* - 1*/; j <= row + 1; j++)
+                for (int i = column/* - 1*/; i <= column + 1; i++)
                     if (i >= 0 && j >= 0 && i < columns && j < rows && !(j == row && i == column))
                         yield return arr[j][i];
         }

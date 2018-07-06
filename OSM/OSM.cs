@@ -177,7 +177,7 @@ namespace OSM
 
                 foreach (var edge in data.MovementsGraph.BlockedEdges)
                 {
-                    DrawLine(spriteBatch, edge.Line, edge.IntersectsWith == LineType.building ? Color.Red : Color.Yellow, 1);
+                    DrawLine(spriteBatch, edge.Line, edge.IntersectsWith == LineType.building ? Color.Red : Color.Yellow, 2);
                 }
             }
 
