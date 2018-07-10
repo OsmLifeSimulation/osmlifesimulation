@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace OSM
 {
     [XmlRoot(ElementName = "bounds")]
-    public class Bounds
+    public class BoundsXml
     {
         [XmlAttribute(AttributeName = "minlat")]
         public string Minlat { get; set; }
@@ -19,7 +19,7 @@ namespace OSM
     }
 
     [XmlRoot(ElementName = "node")]
-    public class Node
+    public class NodeXml
     {
         [XmlAttribute(AttributeName = "id")]
         public string Id { get; set; }
@@ -40,11 +40,11 @@ namespace OSM
         [XmlAttribute(AttributeName = "lon")]
         public string Lon { get; set; }
         [XmlElement(ElementName = "tag")]
-        public List<Tag> Tag { get; set; }
+        public List<TagXml> Tag { get; set; }
     }
 
     [XmlRoot(ElementName = "tag")]
-    public class Tag
+    public class TagXml
     {
         [XmlAttribute(AttributeName = "k")]
         public string K { get; set; }
@@ -53,19 +53,19 @@ namespace OSM
     }
 
     [XmlRoot(ElementName = "nd")]
-    public class Nd
+    public class NdXml
     {
         [XmlAttribute(AttributeName = "ref")]
         public string Ref { get; set; }
     }
 
     [XmlRoot(ElementName = "way")]
-    public class Way
+    public class WayXml
     {
         [XmlElement(ElementName = "nd")]
-        public List<Nd> Nd { get; set; }
+        public List<NdXml> Nd { get; set; }
         [XmlElement(ElementName = "tag")]
-        public List<Tag> Tag { get; set; }
+        public List<TagXml> Tag { get; set; }
         [XmlAttribute(AttributeName = "id")]
         public string Id { get; set; }
         [XmlAttribute(AttributeName = "visible")]
@@ -83,7 +83,7 @@ namespace OSM
     }
 
     [XmlRoot(ElementName = "member")]
-    public class Member
+    public class MemberXml
     {
         [XmlAttribute(AttributeName = "type")]
         public string Type { get; set; }
@@ -94,12 +94,12 @@ namespace OSM
     }
 
     [XmlRoot(ElementName = "relation")]
-    public class Relation
+    public class RelationXml
     {
         [XmlElement(ElementName = "member")]
-        public List<Member> Member { get; set; }
+        public List<MemberXml> Member { get; set; }
         [XmlElement(ElementName = "tag")]
-        public List<Tag> Tag { get; set; }
+        public List<TagXml> Tag { get; set; }
         [XmlAttribute(AttributeName = "id")]
         public string Id { get; set; }
         [XmlAttribute(AttributeName = "visible")]
@@ -117,16 +117,16 @@ namespace OSM
     }
 
     [XmlRoot(ElementName = "osm")]
-    public class Osm
+    public class OsmXml
     {
         [XmlElement(ElementName = "bounds")]
-        public Bounds Bounds { get; set; }
+        public BoundsXml Bounds { get; set; }
         [XmlElement(ElementName = "node")]
-        public List<Node> Node { get; set; }
+        public List<NodeXml> Node { get; set; }
         [XmlElement(ElementName = "way")]
-        public List<Way> Way { get; set; }
+        public List<WayXml> Way { get; set; }
         [XmlElement(ElementName = "relation")]
-        public List<Relation> Relation { get; set; }
+        public List<RelationXml> Relation { get; set; }
         [XmlAttribute(AttributeName = "version")]
         public string Version { get; set; }
         [XmlAttribute(AttributeName = "generator")]

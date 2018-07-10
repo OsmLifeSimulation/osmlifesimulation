@@ -162,23 +162,25 @@ namespace OSM
             {
                 var gridColor = Color.DarkGreen;
                 var gridThickness = 1;
-                foreach (var row in  data.MovementsGraph.Vertices)
+                foreach (var row in data.MovementsGraph.NodesMatrix)
                 {
-                    Vector2 start = new Vector2(data.area.X, row[0].Y);
-                    Vector2 end = new Vector2(data.area.Right, row[0].Y);
+                    Vector2 start = new Vector2(data.area.X, row[0].Point.Y);
+                    Vector2 end = new Vector2(data.area.Right, row[0].Point.Y);
                     DrawLine(spriteBatch, start, end, gridColor, gridThickness);
                 }
-                foreach (var point in data.MovementsGraph.Vertices[0])
+                foreach (var point in data.MovementsGraph.NodesMatrix[0])
                 {
-                    Vector2 start = new Vector2(point.X, data.area.Y);
-                    Vector2 end = new Vector2(point.X, data.area.Bottom);
+                    Vector2 start = new Vector2(point.Point.X, data.area.Y);
+                    Vector2 end = new Vector2(point.Point.X, data.area.Bottom);
                     DrawLine(spriteBatch, start, end, gridColor, gridThickness);
                 }
+            }
 
-                foreach (var edge in data.MovementsGraph.BlockedEdges)
-                {
-                    DrawLine(spriteBatch, edge.Line, edge.IntersectsWith == LineType.building ? Color.Red : Color.Yellow, 2);
-                }
+            for (int i = 0; i < data.MovementsGraph.path.Count - 1; i++)
+            {
+                var current = data.MovementsGraph.path[i].Point;
+                var next = data.MovementsGraph.path[i + 1].Point;
+                DrawLine(spriteBatch, new Line(current, next), Color.Red, 2);
             }
 
             spriteBatch.End();

@@ -10,6 +10,10 @@ namespace OSM
 {
     public static class MathExtensions
     {
+        public static double LineLength(Line line)
+        {
+            return Math.Sqrt(Math.Pow((line.End.Y - line.Start.Y), 2) + Math.Pow((line.End.X - line.Start.X), 2));
+        }
         public static bool LinesIntersects(Line a, Line b)
         {
             return LinesIntersects(a.Start, a.End, b.Start, b.End);
@@ -91,7 +95,7 @@ namespace OSM
             return new Vector2(Convert.ToSingle(E), Convert.ToSingle(N));
         }
 
-        public static Vector2 Deg2UTM(Node node)
+        public static Vector2 Deg2UTM(NodeXml node)
         {
             return Deg2UTM(float.Parse(node.Lat), float.Parse(node.Lon));
         }

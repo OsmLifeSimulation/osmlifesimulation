@@ -12,7 +12,7 @@ namespace OSM
 {
     class OSMData
     {
-        private Osm rawData { get; set; }
+        private OsmXml rawData { get; set; }
 
         public Rectangle area;
 
@@ -69,9 +69,9 @@ namespace OSM
 
         private void deserializeXml()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(Osm));
+            XmlSerializer serializer = new XmlSerializer(typeof(OsmXml));
             StreamReader reader = new StreamReader(Constants.OsmFilePath);
-            rawData = (Osm)serializer.Deserialize(reader);
+            rawData = (OsmXml)serializer.Deserialize(reader);
             reader.Close();
         }
     }
