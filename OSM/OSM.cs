@@ -1,9 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using OSM.Simulated_Objects;
 using OSM.Structures;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 namespace OSM
 {
@@ -17,6 +21,8 @@ namespace OSM
 
         OSMData data;
 
+        public List<Character> Characters = new List<Character>();
+
         Vector2 offset;
 
         Texture2D t; //base for the line texture
@@ -24,6 +30,8 @@ namespace OSM
         bool showGrid = false;
 
         KeyboardState keyboardOldState = new KeyboardState();
+
+        List<List<Node>> paths = new List<List<Node>>();
 
         public OSM()
         {
@@ -38,9 +46,38 @@ namespace OSM
 
             data = new OSMData();
 
+            Characters.Add(new Character(data.MovementsGraph.path));
+
             //offset = data.buildingPoints[Constants.rnd.Next(0, data.buildingPoints.Count)][0];
             offset.X = -(data.area.Center.X - graphics.PreferredBackBufferWidth / 2);
             offset.Y = -(data.area.Center.Y - graphics.PreferredBackBufferHeight / 2);
+
+            new Thread(() =>
+            {
+                //Thread.CurrentThread.IsBackground = true;
+                while (true)
+                {
+                    //TODO: run this code in new Thread, but we need to create new instance of SearchEngine with new isolated List<Node> (we need to copy it and all nodes in all edges)
+                    //or maybe we can just wait until the same code is executed? ...and then create a new Thread
+                    var sw = Stopwatch.StartNew();
+                    var sourceNode = data.Entrances[Constants.rnd.Next(data.Entrances.Count - 1)];
+                    var targetNode = data.Entrances.Where(n => n != sourceNode).ToList()[Constants.rnd.Next(data.Entrances.Count - 1)];
+                    data.MovementsGraph.Search.ChangeStartEnd(data.MovementsGraph.GetClosestNode(sourceNode), data.MovementsGraph.GetClosestNode(targetNode));
+                    var path = data.MovementsGraph.Search.GetShortestPathAstart();
+                    sw.Stop();
+                    if (path.Count != 1)
+                    {
+                        path.Insert(0, new Node(sourceNode));
+                        path.Add(new Node(targetNode));
+                        paths.Add(path);
+                        Characters.Add(new Character(path));
+                    }
+                    else
+                    {
+                        var i = 1;
+                    }
+                }
+            }).Start();
         }
 
         /// <summary>
@@ -115,6 +152,16 @@ namespace OSM
                 showGrid = !showGrid;
             }
 
+            foreach (var character in Characters.ToList())
+            {
+                bool remove;
+                character.Update(out remove);
+                if (remove)
+                {
+                    Characters.Remove(character);
+                }
+            }
+
             keyboardOldState = keyboardState;
 
             base.Update(gameTime);
@@ -143,11 +190,6 @@ namespace OSM
                 DrawLine(spriteBatch, road, Color.GhostWhite, 4);
             }
 
-            foreach (var node in data.nodes)
-            {
-                spriteBatch.Draw(t, new Rectangle(Convert.ToInt32(node.X), Convert.ToInt32(node.Y), 3, 3), Color.DarkCyan);
-            }
-
             //draw grid points
             //foreach (var row in data.points)
             //{
@@ -174,13 +216,26 @@ namespace OSM
                     Vector2 end = new Vector2(point.Point.X, data.area.Bottom);
                     DrawLine(spriteBatch, start, end, gridColor, gridThickness);
                 }
+
+                foreach (var path in paths.ToList())
+                {
+                    for (int i = 0; i < path.Count - 1; i++)
+                    {
+                        var current = path[i].Point;
+                        var next = path[i + 1].Point;
+                        DrawLine(spriteBatch, new Line(current, next), Color.Blue, 2);
+                    }
+                }
             }
 
-            for (int i = 0; i < data.MovementsGraph.path.Count - 1; i++)
+            foreach (var node in data.Entrances)
             {
-                var current = data.MovementsGraph.path[i].Point;
-                var next = data.MovementsGraph.path[i + 1].Point;
-                DrawLine(spriteBatch, new Line(current, next), Color.Red, 2);
+                spriteBatch.Draw(t, new Rectangle(Convert.ToInt32(node.X), Convert.ToInt32(node.Y), 3, 3), Color.Blue);
+            }
+
+            foreach (var character in Characters.ToList())
+            {
+                spriteBatch.Draw(t, new Rectangle(character.Point, new Point(3, 3)), Color.Red);
             }
 
             spriteBatch.End();

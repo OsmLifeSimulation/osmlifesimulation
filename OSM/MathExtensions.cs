@@ -10,6 +10,10 @@ namespace OSM
 {
     public static class MathExtensions
     {
+        public static Vector2 LineCenter(Line line)
+        {
+            return new Vector2((line.Start.X + line.End.X) / 2, (line.Start.Y + line.End.Y) / 2);
+        }
         public static double LineLength(Line line)
         {
             return Math.Sqrt(Math.Pow((line.End.Y - line.Start.Y), 2) + Math.Pow((line.End.X - line.Start.X), 2));

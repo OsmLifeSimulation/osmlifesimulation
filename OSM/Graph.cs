@@ -45,7 +45,7 @@ namespace OSM
                     {
                         var edgeLine = new Line(vertex.Point, neighbor.Point);
                         //var edge = new Edge(vertex, neighbor, MathExtensions.LineLength(edgeLine), 2);
-                        
+
 
                         bool buildingFinded = false;
                         foreach (var line in buildingLines)
@@ -77,7 +77,8 @@ namespace OSM
                 }
             }
 
-            Nodes = NodesMatrix.SelectMany(x => x).ToList();            
+            Nodes = NodesMatrix.SelectMany(x => x).ToList();
+
             Search = new SearchEngine(Nodes);
 
             //try find way
@@ -88,6 +89,11 @@ namespace OSM
             path = Search.GetShortestPathAstart();
             sw.Stop();
             var mill = sw.ElapsedMilliseconds;
+        }
+
+        public Node GetClosestNode(Point sourcePoint)
+        {
+            return Nodes.OrderBy(node => MathExtensions.LineLength(new Line(node.Point, sourcePoint))).Where(n => n.Connections.Count != 0).First();
         }
     }
 

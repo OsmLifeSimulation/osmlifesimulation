@@ -21,6 +21,12 @@ namespace OSM
             Nodes = nodes;
         }
 
+        public void ChangeStartEnd(Node start, Node end)
+        {
+            Start = start;
+            End = end;
+        }
+
         public List<Node> GetShortestPathDijikstra()
         {
             foreach (var node in Nodes)
