@@ -25,10 +25,10 @@ namespace OSM
         public Graph(Rectangle area, List<Line> buildingLines, List<Line> roadLines, List<List<Vector2>> buildingPoints)
         {
             //get graph vertices 
-            for (int i = area.Y; i <= area.Bottom; i += Constants.GridFrequency)
+            for (int i = area.Y; i <= area.Bottom; i += Settings.Presets.GridFrequency)
             {
                 var pointsRow = new List<Node>();
-                for (int j = area.X; j <= area.Right; j += Constants.GridFrequency)
+                for (int j = area.X; j <= area.Right; j += Settings.Presets.GridFrequency)
                 {
                     pointsRow.Add(new Node(new Point(j, i)));
                 }

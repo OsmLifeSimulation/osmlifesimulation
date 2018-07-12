@@ -46,14 +46,15 @@ namespace OSM
             graphics.PreferredBackBufferHeight = 900;
             graphics.IsFullScreen = false;
 
-            data = new OSMData();
+            Settings.Init();
 
+            data = new OSMData();
 
             //offset = data.buildingPoints[Constants.rnd.Next(0, data.buildingPoints.Count)][0];
             offset.X = -(data.area.Center.X - graphics.PreferredBackBufferWidth / 2);
             offset.Y = -(data.area.Center.Y - graphics.PreferredBackBufferHeight / 2);
 
-            for (int i = 0; i < Constants.AdditionalThreadsCount; i++)
+            for (int i = 0; i < Settings.Presets.AdditionalThreadsCount; i++)
             {
                 new Thread(() =>
                 {
@@ -141,24 +142,24 @@ namespace OSM
             var keyboardState = Keyboard.GetState();
 
             float speed = 10;
-            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+            if (Settings.Controls.Up.Any(key => keyboardState.IsKeyDown(key)))
             {
                 offset.Y += speed;
             }
-            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
+            if (Settings.Controls.Down.Any(key => keyboardState.IsKeyDown(key)))
             {
                 offset.Y -= speed;
             }
-            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+            if (Settings.Controls.Right.Any(key => keyboardState.IsKeyDown(key)))
             {
                 offset.X -= speed;
             }
-            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
+            if (Settings.Controls.Left.Any(key => keyboardState.IsKeyDown(key)))
             {
                 offset.X += speed;
             }
 
-            if (keyboardState.IsKeyDown(Keys.G) && keyboardOldState.IsKeyUp(Keys.G))
+            if (keyboardState.IsKeyDown(Settings.Controls.SwitchGreed) && keyboardOldState.IsKeyUp(Settings.Controls.SwitchGreed))
             {
                 showGrid = !showGrid;
             }

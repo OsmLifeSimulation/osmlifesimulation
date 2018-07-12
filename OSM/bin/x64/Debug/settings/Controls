@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Controls xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SwitchGreed>G</SwitchGreed>
+  <Up>
+    <Keys>Up</Keys>
+    <Keys>W</Keys>
+  </Up>
+  <Down>
+    <Keys>Down</Keys>
+    <Keys>S</Keys>
+  </Down>
+  <Right>
+    <Keys>Right</Keys>
+    <Keys>D</Keys>
+  </Right>
+  <Left>
+    <Keys>Left</Keys>
+    <Keys>A</Keys>
+  </Left>
+</Controls>

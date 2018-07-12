@@ -29,7 +29,7 @@ namespace OSM
 
         public OSMData()
         {
-            deserializeXml();
+            rawData = Constants.DeserializeXml<OsmXml>(Constants.OsmFolderPath + Settings.Presets.OsmFileName);
 
             buildingPoints = rawData.Way.Where(w => w.Tag.Exists(t => t.K == "building" && t.V == "yes"))
                 .Select(w => w.Nd.Select(n => MathExtensions.Deg2UTM(rawData.Node.First(node => node.Id == n.Ref))).ToList()).ToList();
@@ -79,14 +79,6 @@ namespace OSM
         public Graph CreateGraph()
         {
             return new Graph(area, BuildingLines, RoadLines, buildingPoints);
-        }
-
-        private void deserializeXml()
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(OsmXml));
-            StreamReader reader = new StreamReader(Constants.OsmFilePath);
-            rawData = (OsmXml)serializer.Deserialize(reader);
-            reader.Close();
         }
     }
 }

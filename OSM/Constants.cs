@@ -1,31 +1,63 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace OSM
 {
     public static class Constants
     {
-        //Threads that add new objects
-        public const uint AdditionalThreadsCount = 1;
-
         //Correction by X and Y
-        public const int 
-            XCorr = 0, 
+        public const int
+            XCorr = 0,
             YCorr = 0;
 
-        //if this value is X, the grid lines will be at a distance of X pixels
-        public const int GridFrequency = 20;
-        public static Point AreaExtension { get; private set; } = new Point(1000, 1000); 
+        public static Point AreaExtension { get; private set; } = new Point(1000, 1000);
 
         //original size is 1
         public const float Resize = 1;
 
         public static Random rnd { get; private set; } = new Random();
 
-        public const string OsmFilePath = @"maps/map.osm";
+        public const string OsmFolderPath = @"maps/";
+
+        const string SettingsFolderPath = @"settings/";
+        public const string PresetsPath = SettingsFolderPath + "Presets";
+        public const string ControlsPath = SettingsFolderPath + "Controls";
+
+        public static T DeserializeXmlOrCreateNew<T>(string path)
+        {
+            try
+            {
+                return DeserializeXml<T>(path);
+            }
+            catch (Exception)
+            {
+                var obj = (T)Activator.CreateInstance(typeof(T), new object[] {});
+                SerializeXml(path, obj);
+                return obj;
+            }
+        }
+
+        public static void SerializeXml<T>(string path, T obj)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            StreamWriter reader = new StreamWriter(path);
+            serializer.Serialize(reader, obj);
+            reader.Close();
+        }
+        public static T DeserializeXml<T>(string path) 
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            StreamReader reader = new StreamReader(path);
+            T obj = (T)serializer.Deserialize(reader);
+            reader.Close();
+
+            return obj;
+        }
     }
 }
