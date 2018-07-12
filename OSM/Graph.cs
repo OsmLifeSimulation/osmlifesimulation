@@ -20,7 +20,9 @@ namespace OSM
         //for tests
         public List<Node> path = new List<Node>();
 
-        public Graph(Rectangle area, List<Line> buildingLines, List<Line> roadLines)
+        List<List<Vector2>> buildingPoints;
+
+        public Graph(Rectangle area, List<Line> buildingLines, List<Line> roadLines, List<List<Vector2>> buildingPoints)
         {
             //get graph vertices 
             for (int i = area.Y; i <= area.Bottom; i += Constants.GridFrequency)
@@ -79,6 +81,8 @@ namespace OSM
 
             Nodes = NodesMatrix.SelectMany(x => x).ToList();
 
+            this.buildingPoints = buildingPoints;
+
             Search = new SearchEngine(Nodes);
 
             //try find way
@@ -91,9 +95,10 @@ namespace OSM
             var mill = sw.ElapsedMilliseconds;
         }
 
-        public Node GetClosestNode(Point sourcePoint)
+        public Node GetClosestNodeOutsideBuilding(Point sourcePoint)
         {
-            return Nodes.OrderBy(node => MathExtensions.LineLength(new Line(node.Point, sourcePoint))).Where(n => n.Connections.Count != 0).First();
+            return Nodes.OrderBy(node => MathExtensions.LineLength(new Line(node.Point, sourcePoint))).Take(30)
+                .Where(n => n.Connections.Count != 0 && buildingPoints.TrueForAll(b => !MathExtensions.IsPointInPolygon(b.ToArray(), n.Point.ToVector2()))).First();
         }
     }
 

@@ -69,7 +69,7 @@ namespace OSM
                         var sw = Stopwatch.StartNew();
                         var sourceNode = data.Entrances[Constants.rnd.Next(data.Entrances.Count - 1)];
                         var targetNode = data.Entrances.Where(n => n != sourceNode).ToList()[Constants.rnd.Next(data.Entrances.Count - 1)];
-                        search.ChangeStartEnd(graph.GetClosestNode(sourceNode), graph.GetClosestNode(targetNode));
+                        search.ChangeStartEnd(graph.GetClosestNodeOutsideBuilding(sourceNode), graph.GetClosestNodeOutsideBuilding(targetNode));
                         var path = search.GetShortestPathAstart();
                         sw.Stop();
                         if (path.Count != 1)
@@ -79,7 +79,7 @@ namespace OSM
                             paths.Add(path);
                             Characters.Add(new Character(path));
                         }
-                        else
+                        else if (search.NodeVisits != 1)
                         {
                         }
                 }

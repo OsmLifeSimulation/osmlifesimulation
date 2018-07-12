@@ -78,7 +78,7 @@ namespace OSM
 
         public Graph CreateGraph()
         {
-            return new Graph(area, BuildingLines, RoadLines);
+            return new Graph(area, BuildingLines, RoadLines, buildingPoints);
         }
 
         private void deserializeXml()

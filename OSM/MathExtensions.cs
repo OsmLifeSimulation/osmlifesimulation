@@ -10,6 +10,29 @@ namespace OSM
 {
     public static class MathExtensions
     {
+        public static bool IsPointInPolygon(Vector2[] polygon, Vector2 point)
+        {
+            int polygonLength = polygon.Length, i = 0;
+            bool inside = false;
+            // x, y for tested point.
+            float pointX = point.X, pointY = point.Y;
+            // start / end point for the current polygon segment.
+            float startX, startY, endX, endY;
+            Vector2 endPoint = polygon[polygonLength - 1];
+            endX = endPoint.X;
+            endY = endPoint.Y;
+            while (i < polygonLength)
+            {
+                startX = endX; startY = endY;
+                endPoint = polygon[i++];
+                endX = endPoint.X; endY = endPoint.Y;
+                //
+                inside ^= (endY > pointY ^ startY > pointY) /* ? pointY inside [startY;endY] segment ? */
+                          && /* if so, test if it is under the segment */
+                          ((pointX - endX) < (pointY - endY) * (startX - endX) / (startY - endY));
+            }
+            return inside;
+        }
         public static Vector2 LineCenter(Line line)
         {
             return new Vector2((line.Start.X + line.End.X) / 2, (line.Start.Y + line.End.Y) / 2);
