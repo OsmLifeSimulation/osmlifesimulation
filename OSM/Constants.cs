@@ -9,6 +9,9 @@ namespace OSM
 {
     public static class Constants
     {
+        //Threads that add new objects
+        public const uint AdditionalThreadsCount = 1;
+
         //Correction by X and Y
         public const int 
             XCorr = 0, 

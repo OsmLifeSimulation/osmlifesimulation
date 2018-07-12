@@ -19,12 +19,28 @@ namespace OSM
         public SearchEngine(List<Node> nodes)
         {
             Nodes = nodes;
+
+            ////Try copy list (incorrect)
+            //Nodes = nodes.Select(n => (Node)n.Clone()).ToList();
+            //foreach (var node in Nodes)
+            //{
+            //    for (int i = 0; i < node.Connections.Count; i++)
+            //    {
+            //        var conn = node.Connections[i];
+            //        conn = new Edge(Nodes.Find(n => n.Point == conn.ConnectedNodes[0].Point), 
+            //            Nodes.Find(n => n.Point == conn.ConnectedNodes[1].Point),
+            //            conn.Length, conn.Cost);
+            //    }
+            //}
         }
 
         public void ChangeStartEnd(Node start, Node end)
         {
             Start = start;
             End = end;
+
+            //Start = Nodes.Find(n => n.Point == start.Point);
+            //End = Nodes.Find(n => n.Point == end.Point);
         }
 
         public List<Node> GetShortestPathDijikstra()

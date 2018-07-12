@@ -33,6 +33,8 @@ namespace OSM
 
         List<List<Node>> paths = new List<List<Node>>();
 
+        Graph MovementsGraph;
+
         public OSM()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -46,38 +48,44 @@ namespace OSM
 
             data = new OSMData();
 
-            Characters.Add(new Character(data.MovementsGraph.path));
 
             //offset = data.buildingPoints[Constants.rnd.Next(0, data.buildingPoints.Count)][0];
             offset.X = -(data.area.Center.X - graphics.PreferredBackBufferWidth / 2);
             offset.Y = -(data.area.Center.Y - graphics.PreferredBackBufferHeight / 2);
 
-            new Thread(() =>
+            for (int i = 0; i < Constants.AdditionalThreadsCount; i++)
             {
-                //Thread.CurrentThread.IsBackground = true;
-                while (true)
+                new Thread(() =>
                 {
-                    //TODO: run this code in new Thread, but we need to create new instance of SearchEngine with new isolated List<Node> (we need to copy it and all nodes in all edges)
-                    //or maybe we can just wait until the same code is executed? ...and then create a new Thread
-                    var sw = Stopwatch.StartNew();
-                    var sourceNode = data.Entrances[Constants.rnd.Next(data.Entrances.Count - 1)];
-                    var targetNode = data.Entrances.Where(n => n != sourceNode).ToList()[Constants.rnd.Next(data.Entrances.Count - 1)];
-                    data.MovementsGraph.Search.ChangeStartEnd(data.MovementsGraph.GetClosestNode(sourceNode), data.MovementsGraph.GetClosestNode(targetNode));
-                    var path = data.MovementsGraph.Search.GetShortestPathAstart();
-                    sw.Stop();
-                    if (path.Count != 1)
+                    //Thread.CurrentThread.IsBackground = true;
+                    Graph graph = data.CreateGraph();
+                    MovementsGraph = graph;
+                    SearchEngine search = new SearchEngine(graph.Nodes);
+                    while (true)
                     {
-                        path.Insert(0, new Node(sourceNode));
-                        path.Add(new Node(targetNode));
-                        paths.Add(path);
-                        Characters.Add(new Character(path));
-                    }
-                    else
-                    {
-                        var i = 1;
-                    }
+                        //TODO: run this code in new Thread, but we need to create new instance of SearchEngine with new isolated List<Node> (we need to copy it and all nodes in all edges)
+                        //or maybe we can just wait until the same code is executed? ...and then create a new Thread
+
+                        var sw = Stopwatch.StartNew();
+                        var sourceNode = data.Entrances[Constants.rnd.Next(data.Entrances.Count - 1)];
+                        var targetNode = data.Entrances.Where(n => n != sourceNode).ToList()[Constants.rnd.Next(data.Entrances.Count - 1)];
+                        search.ChangeStartEnd(graph.GetClosestNode(sourceNode), graph.GetClosestNode(targetNode));
+                        var path = search.GetShortestPathAstart();
+                        sw.Stop();
+                        if (path.Count != 1)
+                        {
+                            path.Insert(0, new Node(sourceNode));
+                            path.Add(new Node(targetNode));
+                            paths.Add(path);
+                            Characters.Add(new Character(path));
+                        }
+                        else
+                        {
+                        }
                 }
-            }).Start();
+                }).Start();
+            }
+
         }
 
         /// <summary>
@@ -115,6 +123,9 @@ namespace OSM
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+
+            //kill all Threads
+            Environment.Exit(Environment.ExitCode);
         }
 
         /// <summary>
@@ -152,15 +163,23 @@ namespace OSM
                 showGrid = !showGrid;
             }
 
-            foreach (var character in Characters.ToList())
+            try
             {
-                bool remove;
-                character.Update(out remove);
-                if (remove)
+                foreach (var character in Characters.ToList())
                 {
-                    Characters.Remove(character);
+                    bool remove;
+                    character.Update(out remove);
+                    if (remove)
+                    {
+                        Characters.Remove(character);
+                    }
                 }
             }
+            catch (Exception)
+            {
+
+            }
+
 
             keyboardOldState = keyboardState;
 
@@ -200,32 +219,40 @@ namespace OSM
             //}
 
             //display grid
-            if (showGrid)
+            if (showGrid && MovementsGraph != null)
             {
                 var gridColor = Color.DarkGreen;
                 var gridThickness = 1;
-                foreach (var row in data.MovementsGraph.NodesMatrix)
+                foreach (var row in MovementsGraph.NodesMatrix)
                 {
                     Vector2 start = new Vector2(data.area.X, row[0].Point.Y);
                     Vector2 end = new Vector2(data.area.Right, row[0].Point.Y);
                     DrawLine(spriteBatch, start, end, gridColor, gridThickness);
                 }
-                foreach (var point in data.MovementsGraph.NodesMatrix[0])
+                foreach (var point in MovementsGraph.NodesMatrix[0])
                 {
                     Vector2 start = new Vector2(point.Point.X, data.area.Y);
                     Vector2 end = new Vector2(point.Point.X, data.area.Bottom);
                     DrawLine(spriteBatch, start, end, gridColor, gridThickness);
                 }
 
-                foreach (var path in paths.ToList())
+                try
                 {
-                    for (int i = 0; i < path.Count - 1; i++)
+                    foreach (var path in paths.ToList())
                     {
-                        var current = path[i].Point;
-                        var next = path[i + 1].Point;
-                        DrawLine(spriteBatch, new Line(current, next), Color.Blue, 2);
+                        for (int i = 0; i < path.Count - 1; i++)
+                        {
+                            var current = path[i].Point;
+                            var next = path[i + 1].Point;
+                            DrawLine(spriteBatch, new Line(current, next), Color.Blue, 2);
+                        }
                     }
                 }
+                catch (Exception)
+                {
+
+                }
+
             }
 
             foreach (var node in data.Entrances)
@@ -233,10 +260,18 @@ namespace OSM
                 spriteBatch.Draw(t, new Rectangle(Convert.ToInt32(node.X), Convert.ToInt32(node.Y), 3, 3), Color.Blue);
             }
 
-            foreach (var character in Characters.ToList())
+            try
             {
-                spriteBatch.Draw(t, new Rectangle(character.Point, new Point(3, 3)), Color.Red);
+                foreach (var character in Characters.ToList())
+                {
+                    spriteBatch.Draw(t, new Rectangle(character.Point, new Point(3, 3)), Color.Red);
+                }
             }
+            catch (Exception)
+            {
+
+            }
+
 
             spriteBatch.End();
 

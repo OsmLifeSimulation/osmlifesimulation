@@ -25,7 +25,7 @@ namespace OSM
 
         public List<Point> Entrances = new List<Point>();
 
-        public Graph MovementsGraph { get; private set; }
+        //public Graph MovementsGraph { get; private set; }
 
         public OSMData()
         {
@@ -72,8 +72,13 @@ namespace OSM
                 maxLatLon - minLatLon + (Constants.AreaExtension + Constants.AreaExtension));
 
 
-            MovementsGraph = new Graph(area, BuildingLines, RoadLines);
+            //MovementsGraph = CreateGraph();
 
+        }
+
+        public Graph CreateGraph()
+        {
+            return new Graph(area, BuildingLines, RoadLines);
         }
 
         private void deserializeXml()
