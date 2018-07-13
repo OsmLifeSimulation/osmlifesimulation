@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSM", "OSM\OSM.csproj", "{E50A8F33-10E6-4633-85A6-A62372307533}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSMClient", "OSMClient\OSMClient.csproj", "{D3339D71-87F6-46F0-AC6C-4994E017B9E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,14 @@ Global
 		{E50A8F33-10E6-4633-85A6-A62372307533}.Release|x64.ActiveCfg = Release|x64
 		{E50A8F33-10E6-4633-85A6-A62372307533}.Release|x86.ActiveCfg = Debug|x64
 		{E50A8F33-10E6-4633-85A6-A62372307533}.Release|x86.Build.0 = Debug|x64
+		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|x64.ActiveCfg = Debug|x86
+		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|x86.ActiveCfg = Debug|x86
+		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|x86.Build.0 = Debug|x86
+		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Release|Any CPU.ActiveCfg = Release|x86
+		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Release|x64.ActiveCfg = Release|x86
+		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Release|x86.ActiveCfg = Release|x86
+		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
