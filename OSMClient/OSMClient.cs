@@ -1,6 +1,15 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Global.NetworkData;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Global;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OSMClient
 {
@@ -9,13 +18,79 @@ namespace OSMClient
     /// </summary>
     public class OSMClient : Game
     {
+
+        static Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        static MemoryStream ms = new MemoryStream(new byte[256], 0, 256, true, true);
+        static BinaryWriter writer = new BinaryWriter(ms);
+        static BinaryReader reader = new BinaryReader(ms);
+        public static BinaryFormatter formatter = new BinaryFormatter();
+
+        static Random random = new Random();
+
+        List<LineData> linesData = new List<LineData>();
+
+        static void SendPacket(PacketInfo info)
+        {
+            ms.Position = 0;
+
+            switch (info)
+            {
+                default:
+                    writer.Write((int)info);
+                    socket.Send(ms.GetBuffer());
+                    break;
+            }
+        }
+
+        int ReceivePacket()
+        {
+            ms.Position = 0;
+            socket.Receive(ms.GetBuffer());
+            int code = reader.ReadInt32();
+
+            switch ((PacketInfo)code)
+            {
+                case PacketInfo.ID: return reader.ReadInt32();
+                case PacketInfo.CameraOffset:
+                    offset = ((PointData)formatter.Deserialize(ms)).Vector;
+                    break;
+
+                case PacketInfo.Map:
+                    linesData.Add((LineData)formatter.Deserialize(ms));
+                    break;
+            }
+
+            return -1;
+        }
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        Vector2 offset;
+
+        Texture2D t; //base for the line texture
 
         public OSMClient()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            this.IsMouseVisible = true;
+            this.Window.Position = new Point(200, 50);
+            graphics.PreferredBackBufferWidth = 1600;
+            graphics.PreferredBackBufferHeight = 900;
+            graphics.IsFullScreen = false;
+
+
+            socket.Connect("127.0.0.1", 2048);
+
+            SendPacket(PacketInfo.ID);
+            int id = ReceivePacket();
+
+            SendPacket(PacketInfo.Map);
+            SendPacket(PacketInfo.CameraOffset);
+
+            Task.Run(() => { while (true) ReceivePacket(); });
         }
 
         /// <summary>
@@ -40,7 +115,10 @@ namespace OSMClient
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // create 1x1 texture for line drawing
+            t = new Texture2D(GraphicsDevice, 1, 1);
+            t.SetData<Color>(
+                new Color[] { Color.White });// fill the texture with white
         }
 
         /// <summary>
@@ -73,9 +151,23 @@ namespace OSMClient
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.LightGray);
 
-            // TODO: Add your drawing code here
+            Matrix Transform = Matrix.CreateTranslation(offset.X, offset.Y, 0);
+            spriteBatch.Begin(transformMatrix: Transform);
+
+            try
+            {
+                foreach (var lineData in linesData)
+                {
+                    lineData.Line.Draw(spriteBatch, lineData.Thickness, lineData.Color, t);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

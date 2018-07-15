@@ -23,3 +23,5 @@ C:\Users\Sergey\source\repos\osmlifesimulation\OSMClient\bin\Windows\x86\Debug\S
 C:\Users\Sergey\source\repos\osmlifesimulation\OSMClient\obj\x86\Debug\OSMClient.csproj.CopyComplete
 C:\Users\Sergey\source\repos\osmlifesimulation\OSMClient\obj\x86\Debug\OSMClient.exe
 C:\Users\Sergey\source\repos\osmlifesimulation\OSMClient\obj\x86\Debug\OSMClient.pdb
+C:\Users\Sergey\source\repos\osmlifesimulation\OSMClient\bin\Windows\x86\Debug\Global.dll
+C:\Users\Sergey\source\repos\osmlifesimulation\OSMClient\bin\Windows\x86\Debug\Global.pdb

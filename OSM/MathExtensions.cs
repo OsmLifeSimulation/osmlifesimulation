@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using OSM.Structures;
+using Global;
 using System;
 using System.Collections.Generic;
 using System.Linq;

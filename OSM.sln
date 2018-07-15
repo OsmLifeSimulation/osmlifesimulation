@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSM", "OSM\OSM.csproj", "{E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSMClient", "OSMClient\OSMClient.csproj", "{D3339D71-87F6-46F0-AC6C-4994E017B9E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Global", "NetworkGlobalClasses\Global.csproj", "{38D1AE86-5358-4379-988F-37FFBD86404A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,12 +30,25 @@ Global
 		{E50A8F33-10E6-4633-85A6-A62372307533}.Release|x86.Build.0 = Debug|x64
 		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|x64.ActiveCfg = Debug|x86
+		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|x64.Build.0 = Debug|x86
 		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|x86.ActiveCfg = Debug|x86
 		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|x86.Build.0 = Debug|x86
 		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Release|Any CPU.ActiveCfg = Release|x86
 		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Release|x64.ActiveCfg = Release|x86
 		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Release|x86.ActiveCfg = Release|x86
 		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Release|x86.Build.0 = Release|x86
+		{38D1AE86-5358-4379-988F-37FFBD86404A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38D1AE86-5358-4379-988F-37FFBD86404A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38D1AE86-5358-4379-988F-37FFBD86404A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{38D1AE86-5358-4379-988F-37FFBD86404A}.Debug|x64.Build.0 = Debug|Any CPU
+		{38D1AE86-5358-4379-988F-37FFBD86404A}.Debug|x86.ActiveCfg = Debug|x86
+		{38D1AE86-5358-4379-988F-37FFBD86404A}.Debug|x86.Build.0 = Debug|x86
+		{38D1AE86-5358-4379-988F-37FFBD86404A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38D1AE86-5358-4379-988F-37FFBD86404A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38D1AE86-5358-4379-988F-37FFBD86404A}.Release|x64.ActiveCfg = Release|x64
+		{38D1AE86-5358-4379-988F-37FFBD86404A}.Release|x64.Build.0 = Release|x64
+		{38D1AE86-5358-4379-988F-37FFBD86404A}.Release|x86.ActiveCfg = Release|x86
+		{38D1AE86-5358-4379-988F-37FFBD86404A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

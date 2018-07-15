@@ -23,3 +23,5 @@ C:\Users\Sergey\source\repos\osmlifesimulation\OSM\obj\x64\Debug\OSM.csproj.Copy
 C:\Users\Sergey\source\repos\osmlifesimulation\OSM\obj\x64\Debug\OSM.exe
 C:\Users\Sergey\source\repos\osmlifesimulation\OSM\obj\x64\Debug\OSM.pdb
 C:\Users\Sergey\source\repos\osmlifesimulation\OSM\obj\x64\Debug\OSM.csprojAssemblyReference.cache
+C:\Users\Sergey\source\repos\osmlifesimulation\OSM\bin\x64\Debug\Global.dll
+C:\Users\Sergey\source\repos\osmlifesimulation\OSM\bin\x64\Debug\Global.pdb

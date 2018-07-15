@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using OSM.Structures;
+using Global;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Global.NetworkData;
 
 namespace OSM
 {
@@ -71,7 +72,8 @@ namespace OSM
             area = new Rectangle(minLatLon - Constants.AreaExtension,
                 maxLatLon - minLatLon + (Constants.AreaExtension + Constants.AreaExtension));
 
-
+            Server.LinesData.AddRange(BuildingLines.Select(l => new LineData(l, Color.SlateGray, 2)));
+            Server.LinesData.AddRange(RoadLines.Select(l => new LineData(l, Color.GhostWhite, 4)));
             //MovementsGraph = CreateGraph();
 
         }

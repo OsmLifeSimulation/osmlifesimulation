@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Global;
 using OSM.Simulated_Objects;
-using OSM.Structures;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -46,13 +46,15 @@ namespace OSM
             graphics.PreferredBackBufferHeight = 900;
             graphics.IsFullScreen = false;
 
-            Settings.Init();
+            Settings.Init();    
 
             data = new OSMData();
 
             //offset = data.buildingPoints[Constants.rnd.Next(0, data.buildingPoints.Count)][0];
             offset.X = -(data.area.Center.X - graphics.PreferredBackBufferWidth / 2);
             offset.Y = -(data.area.Center.Y - graphics.PreferredBackBufferHeight / 2);
+
+            Server.Init(offset);
 
             for (int i = 0; i < Settings.Presets.AdditionalThreadsCount; i++)
             {
@@ -202,12 +204,12 @@ namespace OSM
 
             foreach (var build in data.BuildingLines)
             {
-                DrawLine(spriteBatch, build, Color.SlateGray, 2);
+                build.Draw(spriteBatch, 2, Color.SlateGray, t);
             }
 
             foreach (var road in data.RoadLines)
             {
-                DrawLine(spriteBatch, road, Color.GhostWhite, 4);
+                road.Draw(spriteBatch, 4, Color.GhostWhite, t);
             }
 
             //draw grid points
@@ -228,13 +230,13 @@ namespace OSM
                 {
                     Vector2 start = new Vector2(data.area.X, row[0].Point.Y);
                     Vector2 end = new Vector2(data.area.Right, row[0].Point.Y);
-                    DrawLine(spriteBatch, start, end, gridColor, gridThickness);
+                    new Line(start, end).Draw(spriteBatch, gridThickness, gridColor, t);
                 }
                 foreach (var point in MovementsGraph.NodesMatrix[0])
                 {
                     Vector2 start = new Vector2(point.Point.X, data.area.Y);
                     Vector2 end = new Vector2(point.Point.X, data.area.Bottom);
-                    DrawLine(spriteBatch, start, end, gridColor, gridThickness);
+                    new Line(start, end).Draw(spriteBatch, gridThickness, gridColor, t);
                 }
 
                 try
@@ -245,7 +247,7 @@ namespace OSM
                         {
                             var current = path[i].Point;
                             var next = path[i + 1].Point;
-                            DrawLine(spriteBatch, new Line(current, next), Color.Blue, 2);
+                            new Line(current, next).Draw(spriteBatch, 2, Color.Blue, t);
                         }
                     }
                 }
@@ -277,32 +279,6 @@ namespace OSM
             spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        void DrawLine(SpriteBatch sb, Line line, Color color, int thickness)
-        {
-            DrawLine(sb, line.Start, line.End, color, thickness);
-        }
-        void DrawLine(SpriteBatch sb, Vector2 start, Vector2 end, Color color, int thickness)
-        {
-            Vector2 edge = end - start;
-            // calculate angle to rotate line
-            float angle =
-                (float)Math.Atan2(edge.Y, edge.X);
-
-
-            sb.Draw(t,
-                new Rectangle(// rectangle defines shape of line and position of start of line
-                    (int)start.X,
-                    (int)start.Y,
-                    (int)edge.Length(), //sb will strech the texture to fill this rectangle
-                    thickness), //width of line, change this to make thicker line
-                null,
-                color, //colour of line
-                angle,     //angle of line (calulated above)
-                new Vector2(0, 0), // point in line about which to rotate
-                SpriteEffects.None,
-                0);
         }
     }
 }
