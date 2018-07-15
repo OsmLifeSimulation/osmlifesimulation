@@ -12,6 +12,9 @@ namespace Global.NetworkData
     {
         float[] point = new float[2];
 
+        static int id = 0;
+        public int Id { get; private set; } = id++;
+
         public Vector2 Vector {
             get
             {
@@ -32,6 +35,11 @@ namespace Global.NetworkData
         public PointData(Vector2 vector)
         {
             Vector = vector;
+        }
+        public PointData(Color color, int thickness)
+        {
+            Color = color;
+            Thickness = thickness;
         }
     }
 }

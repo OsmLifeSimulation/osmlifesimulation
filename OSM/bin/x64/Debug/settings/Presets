@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Presets xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <AdditionalThreadsCount>8</AdditionalThreadsCount>
+  <AdditionalThreadsCount>1</AdditionalThreadsCount>
   <GridFrequency>20</GridFrequency>
   <OsmFileName>Map.osm</OsmFileName>
 </Presets>

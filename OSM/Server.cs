@@ -11,6 +11,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using OSM.Simulated_Objects;
 
 namespace OSM
 {
@@ -119,6 +120,23 @@ namespace OSM
                         break;
                 }
             }
+        }
+        public static void UpdateClientsWithCharacter(Character character)
+        {
+            //new Thread(() =>
+            //{
+                MemoryStream ms = new MemoryStream(new byte[256], 0, 256, true, true);
+                BinaryWriter writer = new BinaryWriter(ms);
+                BinaryReader reader = new BinaryReader(ms);
+
+                foreach (var client in clients)
+                {
+                    ms.Clear();
+                    writer.Write((int)PacketInfo.Character);
+                    formatter.Serialize(ms, character.PointData);
+                    client.Socket.Send(ms.GetBuffer());
+                }
+            //});
         }
 
         static void Clear(this MemoryStream source)

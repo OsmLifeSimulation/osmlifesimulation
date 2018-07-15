@@ -10,6 +10,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace OSMClient
 {
@@ -28,6 +29,7 @@ namespace OSMClient
         static Random random = new Random();
 
         List<LineData> linesData = new List<LineData>();
+        List<PointData> characters = new List<PointData>();
 
         static void SendPacket(PacketInfo info)
         {
@@ -57,6 +59,14 @@ namespace OSMClient
 
                 case PacketInfo.Map:
                     linesData.Add((LineData)formatter.Deserialize(ms));
+                    break;
+                case PacketInfo.Character:
+                    var character = (PointData)formatter.Deserialize(ms);
+                    var updateCharacter = characters.Find(c => c.Id == character.Id);
+                    if (updateCharacter != null)
+                        updateCharacter.Vector = character.Vector;
+                    else
+                        characters.Add(character);
                     break;
             }
 
@@ -161,6 +171,17 @@ namespace OSMClient
                 foreach (var lineData in linesData)
                 {
                     lineData.Line.Draw(spriteBatch, lineData.Thickness, lineData.Color, t);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            try
+            {
+                foreach (var character in characters)
+                {
+                    spriteBatch.Draw(t, new Rectangle(character.Vector.ToPoint(), new Point(3, 3)), Color.Red);
                 }
             }
             catch (Exception)
