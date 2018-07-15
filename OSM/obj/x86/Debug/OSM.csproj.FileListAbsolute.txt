@@ -48,3 +48,5 @@ C:\Users\Sergey\Source\Repos\osmlifesimulation\OSM\obj\x86\Debug\OSM.csproj.Core
 C:\Users\Sergey\Source\Repos\osmlifesimulation\OSM\obj\x86\Debug\OSM.csproj.CopyComplete
 C:\Users\Sergey\Source\Repos\osmlifesimulation\OSM\obj\x86\Debug\OSM.exe
 C:\Users\Sergey\Source\Repos\osmlifesimulation\OSM\obj\x86\Debug\OSM.pdb
+C:\Users\BUROVIC\Source\Repos\osmlifesimulation\OSM\obj\x86\Debug\OSM.exe
+C:\Users\BUROVIC\Source\Repos\osmlifesimulation\OSM\obj\x86\Debug\OSM.pdb

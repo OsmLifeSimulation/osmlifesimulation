@@ -81,7 +81,7 @@ namespace OSM
                             path.Insert(0, new Node(sourceNode));
                             path.Add(new Node(targetNode));
                             paths.Add(path);
-                            Characters.Add(new Character(path));
+                            Characters.Add(new Character(path, Constants.rnd.Next(3, 30)));
                         }
                         else if (search.NodeVisits != 1)
                         {
@@ -177,7 +177,9 @@ namespace OSM
                     {
                         Characters.Remove(character);
                     }
-                    /*Task.Run(() => { */Server.UpdateClientsWithCharacter(character)/*; })*/;
+                    /*Task.Run(() => { */
+                    Server.UpdateClientsWithCharacter(character)/*; })*/;
+
                 }
             }
             catch (Exception)

@@ -12,6 +12,10 @@ namespace OSM.Simulated_Objects
     {
         List<Node> path;
         public Point Point;
+
+        //no deseleration if 0
+        int Deceleration = 10;
+
         int speed = 1;
 
         Node next;
@@ -22,27 +26,38 @@ namespace OSM.Simulated_Objects
                 return pointData;
             } }
 
-        public Character(List<Node> path)
+        public Character(List<Node> path, int deceleration)
         {
             pointData = new PointData(Color.Red, 3);
             this.path = path;
             Point = path[0].Point;
             next = path.Count != 1 ? path[1] : path[0];
+
+            Deceleration = deceleration;
+        }
+
+        public bool WillBeUpdated()
+        {
+            return Constants.rnd.Next(Deceleration) == 0;
         }
         public void Update(out bool remove)
         {
-            if (next != null)
+            if (WillBeUpdated())
             {
-                if (move())
+                if (next != null)
                 {
-                    next = getNextNode();
+                    if (move())
+                    {
+                        next = getNextNode();
+                    }
+                    remove = false;
                 }
-                remove = false;
+                else
+                {
+                    remove = true;
+                }
             }
-            else
-            {
-                remove = true;
-            }
+            remove = false;
         }
 
         /// <summary>
@@ -62,6 +77,7 @@ namespace OSM.Simulated_Objects
             {
                 Point.Y += Point.Y < next.Point.Y ? speed : -speed;
             }
+
             return false;
         }
 
