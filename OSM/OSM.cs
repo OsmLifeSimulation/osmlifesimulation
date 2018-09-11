@@ -56,6 +56,7 @@ namespace OSM
             offset.Y = -(data.area.Center.Y - graphics.PreferredBackBufferHeight / 2);
 
             Server.Init(offset);
+            ServerWebSocket.Init(Characters);
 
             for (int i = 0; i < Settings.Presets.AdditionalThreadsCount; i++)
             {
@@ -76,7 +77,7 @@ namespace OSM
                         search.ChangeStartEnd(graph.GetClosestNodeOutsideBuilding(sourceNode), graph.GetClosestNodeOutsideBuilding(targetNode));
                         var path = search.GetShortestPathAstart();
                         sw.Stop();
-                        if (path.Count != 1)
+                        if (path.Count != 1/* && Characters.Count < 100*/)
                         {
                             path.Insert(0, new Node(sourceNode));
                             path.Add(new Node(targetNode));

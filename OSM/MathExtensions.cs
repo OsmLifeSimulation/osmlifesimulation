@@ -122,66 +122,100 @@ namespace OSM
             return new Vector2(Convert.ToSingle(E), Convert.ToSingle(N));
         }
 
+        //It is unacceptable to store these values here, need to store it for each vector of UTM coordinates
+        //But another way we need to store a lot of useless data
+        static int Zone;
+        static char Letter;
+
         public static Vector2 Deg2UTM(NodeXml node)
         {
             return Deg2UTM(float.Parse(node.Lat), float.Parse(node.Lon));
         }
-        public static Vector2 Deg2UTM(double Lat, double Lon)
+        public static Vector2 Deg2UTM(double lat, double lon)
         {
-            double Easting;
-            double Northing;
-            int Zone;
-            char Letter;
+            double easting;
+            double northing;
+            int zone;
+            char letter;
 
-            Zone = (int)Math.Floor(Lon / 6 + 31);
-            if (Lat < -72)
-                Letter = 'C';
-            else if (Lat < -64)
-                Letter = 'D';
-            else if (Lat < -56)
-                Letter = 'E';
-            else if (Lat < -48)
-                Letter = 'F';
-            else if (Lat < -40)
-                Letter = 'G';
-            else if (Lat < -32)
-                Letter = 'H';
-            else if (Lat < -24)
-                Letter = 'J';
-            else if (Lat < -16)
-                Letter = 'K';
-            else if (Lat < -8)
-                Letter = 'L';
-            else if (Lat < 0)
-                Letter = 'M';
-            else if (Lat < 8)
-                Letter = 'N';
-            else if (Lat < 16)
-                Letter = 'P';
-            else if (Lat < 24)
-                Letter = 'Q';
-            else if (Lat < 32)
-                Letter = 'R';
-            else if (Lat < 40)
-                Letter = 'S';
-            else if (Lat < 48)
-                Letter = 'T';
-            else if (Lat < 56)
-                Letter = 'U';
-            else if (Lat < 64)
-                Letter = 'V';
-            else if (Lat < 72)
-                Letter = 'W';
+            zone = (int)Math.Floor(lon / 6 + 31);
+            if (lat < -72)
+                letter = 'C';
+            else if (lat < -64)
+                letter = 'D';
+            else if (lat < -56)
+                letter = 'E';
+            else if (lat < -48)
+                letter = 'F';
+            else if (lat < -40)
+                letter = 'G';
+            else if (lat < -32)
+                letter = 'H';
+            else if (lat < -24)
+                letter = 'J';
+            else if (lat < -16)
+                letter = 'K';
+            else if (lat < -8)
+                letter = 'L';
+            else if (lat < 0)
+                letter = 'M';
+            else if (lat < 8)
+                letter = 'N';
+            else if (lat < 16)
+                letter = 'P';
+            else if (lat < 24)
+                letter = 'Q';
+            else if (lat < 32)
+                letter = 'R';
+            else if (lat < 40)
+                letter = 'S';
+            else if (lat < 48)
+                letter = 'T';
+            else if (lat < 56)
+                letter = 'U';
+            else if (lat < 64)
+                letter = 'V';
+            else if (lat < 72)
+                letter = 'W';
             else
-                Letter = 'X';
-            Easting = 0.5 * Math.Log((1 + Math.Cos(Lat * Math.PI / 180) * Math.Sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)) / (1 - Math.Cos(Lat * Math.PI / 180) * Math.Sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180))) * 0.9996 * 6399593.62 / Math.Pow((1 + Math.Pow(0.0820944379, 2) * Math.Pow(Math.Cos(Lat * Math.PI / 180), 2)), 0.5) * (1 + Math.Pow(0.0820944379, 2) / 2 * Math.Pow((0.5 * Math.Log((1 + Math.Cos(Lat * Math.PI / 180) * Math.Sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)) / (1 - Math.Cos(Lat * Math.PI / 180) * Math.Sin(Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)))), 2) * Math.Pow(Math.Cos(Lat * Math.PI / 180), 2) / 3) + 500000;
-            Easting = Math.Round(Easting * 100) * 0.01;
-            Northing = (Math.Atan(Math.Tan(Lat * Math.PI / 180) / Math.Cos((Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180))) - Lat * Math.PI / 180) * 0.9996 * 6399593.625 / Math.Sqrt(1 + 0.006739496742 * Math.Pow(Math.Cos(Lat * Math.PI / 180), 2)) * (1 + 0.006739496742 / 2 * Math.Pow(0.5 * Math.Log((1 + Math.Cos(Lat * Math.PI / 180) * Math.Sin((Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180))) / (1 - Math.Cos(Lat * Math.PI / 180) * Math.Sin((Lon * Math.PI / 180 - (6 * Zone - 183) * Math.PI / 180)))), 2) * Math.Pow(Math.Cos(Lat * Math.PI / 180), 2)) + 0.9996 * 6399593.625 * (Lat * Math.PI / 180 - 0.005054622556 * (Lat * Math.PI / 180 + Math.Sin(2 * Lat * Math.PI / 180) / 2) + 4.258201531e-05 * (3 * (Lat * Math.PI / 180 + Math.Sin(2 * Lat * Math.PI / 180) / 2) + Math.Sin(2 * Lat * Math.PI / 180) * Math.Pow(Math.Cos(Lat * Math.PI / 180), 2)) / 4 - 1.674057895e-07 * (5 * (3 * (Lat * Math.PI / 180 + Math.Sin(2 * Lat * Math.PI / 180) / 2) + Math.Sin(2 * Lat * Math.PI / 180) * Math.Pow(Math.Cos(Lat * Math.PI / 180), 2)) / 4 + Math.Sin(2 * Lat * Math.PI / 180) * Math.Pow(Math.Cos(Lat * Math.PI / 180), 2) * Math.Pow(Math.Cos(Lat * Math.PI / 180), 2)) / 3);
-            if (Letter < 'M')
-                Northing = Northing + 10000000;
-            Northing = Math.Round(Northing * 100) * 0.01;
+                letter = 'X';
+            easting = 0.5 * Math.Log((1 + Math.Cos(lat * Math.PI / 180) * Math.Sin(lon * Math.PI / 180 - (6 * zone - 183) * Math.PI / 180)) / (1 - Math.Cos(lat * Math.PI / 180) * Math.Sin(lon * Math.PI / 180 - (6 * zone - 183) * Math.PI / 180))) * 0.9996 * 6399593.62 / Math.Pow((1 + Math.Pow(0.0820944379, 2) * Math.Pow(Math.Cos(lat * Math.PI / 180), 2)), 0.5) * (1 + Math.Pow(0.0820944379, 2) / 2 * Math.Pow((0.5 * Math.Log((1 + Math.Cos(lat * Math.PI / 180) * Math.Sin(lon * Math.PI / 180 - (6 * zone - 183) * Math.PI / 180)) / (1 - Math.Cos(lat * Math.PI / 180) * Math.Sin(lon * Math.PI / 180 - (6 * zone - 183) * Math.PI / 180)))), 2) * Math.Pow(Math.Cos(lat * Math.PI / 180), 2) / 3) + 500000;
+            easting = Math.Round(easting * 100) * 0.01;
+            northing = (Math.Atan(Math.Tan(lat * Math.PI / 180) / Math.Cos((lon * Math.PI / 180 - (6 * zone - 183) * Math.PI / 180))) - lat * Math.PI / 180) * 0.9996 * 6399593.625 / Math.Sqrt(1 + 0.006739496742 * Math.Pow(Math.Cos(lat * Math.PI / 180), 2)) * (1 + 0.006739496742 / 2 * Math.Pow(0.5 * Math.Log((1 + Math.Cos(lat * Math.PI / 180) * Math.Sin((lon * Math.PI / 180 - (6 * zone - 183) * Math.PI / 180))) / (1 - Math.Cos(lat * Math.PI / 180) * Math.Sin((lon * Math.PI / 180 - (6 * zone - 183) * Math.PI / 180)))), 2) * Math.Pow(Math.Cos(lat * Math.PI / 180), 2)) + 0.9996 * 6399593.625 * (lat * Math.PI / 180 - 0.005054622556 * (lat * Math.PI / 180 + Math.Sin(2 * lat * Math.PI / 180) / 2) + 4.258201531e-05 * (3 * (lat * Math.PI / 180 + Math.Sin(2 * lat * Math.PI / 180) / 2) + Math.Sin(2 * lat * Math.PI / 180) * Math.Pow(Math.Cos(lat * Math.PI / 180), 2)) / 4 - 1.674057895e-07 * (5 * (3 * (lat * Math.PI / 180 + Math.Sin(2 * lat * Math.PI / 180) / 2) + Math.Sin(2 * lat * Math.PI / 180) * Math.Pow(Math.Cos(lat * Math.PI / 180), 2)) / 4 + Math.Sin(2 * lat * Math.PI / 180) * Math.Pow(Math.Cos(lat * Math.PI / 180), 2) * Math.Pow(Math.Cos(lat * Math.PI / 180), 2)) / 3);
+            if (letter < 'M')
+                northing = northing + 10000000;
+            northing = Math.Round(northing * 100) * 0.01;
 
-            return new Vector2((Convert.ToSingle(Easting) - Constants.XCorr) * Constants.Resize, (-(Convert.ToSingle(Northing) - Constants.YCorr)) * Constants.Resize);
+            Zone = zone;
+            Letter = letter;
+
+            return new Vector2(Convert.ToSingle(easting), Convert.ToSingle(northing));
+        }
+
+        public static Vector2 UTM2Deg(Vector2 UTM)
+        {
+            int zone = Zone;
+            char letter = Letter;
+            double easting = UTM.X;
+            double northing = UTM.Y;
+            double hem;
+            if (letter > 'M')
+                hem = 'N';
+            else
+                hem = 'S';
+            double north;
+            if (hem == 'S')
+                north = northing - 10000000;
+            else
+                north = northing;
+            var latitude = (north / 6366197.724 / 0.9996 + (1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2) - 0.006739496742 * Math.Sin(north / 6366197.724 / 0.9996) * Math.Cos(north / 6366197.724 / 0.9996) * (Math.Atan(Math.Cos(Math.Atan((Math.Exp((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))) * (1 - 0.006739496742 * Math.Pow((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))), 2) / 2 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2) / 3)) - Math.Exp(-(easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))) * (1 - 0.006739496742 * Math.Pow((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))), 2) / 2 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2) / 3))) / 2 / Math.Cos((north - 0.9996 * 6399593.625 * (north / 6366197.724 / 0.9996 - 0.006739496742 * 3 / 4 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Pow(0.006739496742 * 3 / 4, 2) * 5 / 3 * (3 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 4 - Math.Pow(0.006739496742 * 3 / 4, 3) * 35 / 27 * (5 * (3 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 4 + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 3)) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))) * (1 - 0.006739496742 * Math.Pow((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))), 2) / 2 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) + north / 6366197.724 / 0.9996))) * Math.Tan((north - 0.9996 * 6399593.625 * (north / 6366197.724 / 0.9996 - 0.006739496742 * 3 / 4 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Pow(0.006739496742 * 3 / 4, 2) * 5 / 3 * (3 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 4 - Math.Pow(0.006739496742 * 3 / 4, 3) * 35 / 27 * (5 * (3 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 4 + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 3)) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))) * (1 - 0.006739496742 * Math.Pow((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))), 2) / 2 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) + north / 6366197.724 / 0.9996)) - north / 6366197.724 / 0.9996) * 3 / 2) * (Math.Atan(Math.Cos(Math.Atan((Math.Exp((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))) * (1 - 0.006739496742 * Math.Pow((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))), 2) / 2 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2) / 3)) - Math.Exp(-(easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))) * (1 - 0.006739496742 * Math.Pow((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))), 2) / 2 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2) / 3))) / 2 / Math.Cos((north - 0.9996 * 6399593.625 * (north / 6366197.724 / 0.9996 - 0.006739496742 * 3 / 4 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Pow(0.006739496742 * 3 / 4, 2) * 5 / 3 * (3 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 4 - Math.Pow(0.006739496742 * 3 / 4, 3) * 35 / 27 * (5 * (3 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 4 + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 3)) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))) * (1 - 0.006739496742 * Math.Pow((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))), 2) / 2 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) + north / 6366197.724 / 0.9996))) * Math.Tan((north - 0.9996 * 6399593.625 * (north / 6366197.724 / 0.9996 - 0.006739496742 * 3 / 4 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Pow(0.006739496742 * 3 / 4, 2) * 5 / 3 * (3 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 4 - Math.Pow(0.006739496742 * 3 / 4, 3) * 35 / 27 * (5 * (3 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 4 + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 3)) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))) * (1 - 0.006739496742 * Math.Pow((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))), 2) / 2 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) + north / 6366197.724 / 0.9996)) - north / 6366197.724 / 0.9996)) * 180 / Math.PI;
+            latitude = Math.Round(latitude * 10000000);
+            latitude = latitude / 10000000;
+            var longitude = Math.Atan((Math.Exp((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))) * (1 - 0.006739496742 * Math.Pow((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))), 2) / 2 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2) / 3)) - Math.Exp(-(easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))) * (1 - 0.006739496742 * Math.Pow((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))), 2) / 2 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2) / 3))) / 2 / Math.Cos((north - 0.9996 * 6399593.625 * (north / 6366197.724 / 0.9996 - 0.006739496742 * 3 / 4 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Pow(0.006739496742 * 3 / 4, 2) * 5 / 3 * (3 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 4 - Math.Pow(0.006739496742 * 3 / 4, 3) * 35 / 27 * (5 * (3 * (north / 6366197.724 / 0.9996 + Math.Sin(2 * north / 6366197.724 / 0.9996) / 2) + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 4 + Math.Sin(2 * north / 6366197.724 / 0.9996) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2) * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) / 3)) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))) * (1 - 0.006739496742 * Math.Pow((easting - 500000) / (0.9996 * 6399593.625 / Math.Sqrt((1 + 0.006739496742 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)))), 2) / 2 * Math.Pow(Math.Cos(north / 6366197.724 / 0.9996), 2)) + north / 6366197.724 / 0.9996)) * 180 / Math.PI + zone * 6 - 183;
+            longitude = Math.Round(longitude * 10000000);
+            longitude = longitude / 10000000;
+
+            return new Vector2(Convert.ToSingle(latitude), Convert.ToSingle(longitude));
         }
 
         public static IEnumerable<T> AdjacentBottomRightElements<T>(List<List<T>> arr, int row, int column)
