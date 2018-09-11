@@ -17,6 +17,9 @@ namespace OSM
         public int GridFrequency { get; set; } = 20;
 
         public string OsmFileName { get; set; } = "Map.osm";
+
+        //Set 0 or less to make it infinite
+        public int CharactersMaxCount = 50;
     }
 
     [XmlRoot(ElementName = "Controls")]
