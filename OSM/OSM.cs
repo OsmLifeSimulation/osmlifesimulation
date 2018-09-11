@@ -68,24 +68,31 @@ namespace OSM
                     SearchEngine search = new SearchEngine(graph.Nodes);
                     while (true)
                     {
-                        //TODO: run this code in new Thread, but we need to create new instance of SearchEngine with new isolated List<Node> (we need to copy it and all nodes in all edges)
-                        //or maybe we can just wait until the same code is executed? ...and then create a new Thread
+                        if (Characters.Count < 50)
+                        {
+                            //TODO: run this code in new Thread, but we need to create new instance of SearchEngine with new isolated List<Node> (we need to copy it and all nodes in all edges)
+                            //or maybe we can just wait until the same code is executed? ...and then create a new Thread
 
-                        var sw = Stopwatch.StartNew();
-                        var sourceNode = data.Entrances[Constants.rnd.Next(data.Entrances.Count - 1)];
-                        var targetNode = data.Entrances.Where(n => n != sourceNode).ToList()[Constants.rnd.Next(data.Entrances.Count - 1)];
-                        search.ChangeStartEnd(graph.GetClosestNodeOutsideBuilding(sourceNode), graph.GetClosestNodeOutsideBuilding(targetNode));
-                        var path = search.GetShortestPathAstart();
-                        sw.Stop();
-                        if (path.Count != 1/* && Characters.Count < 100*/)
-                        {
-                            path.Insert(0, new Node(sourceNode));
-                            path.Add(new Node(targetNode));
-                            paths.Add(path);
-                            Characters.Add(new Character(path, Constants.rnd.Next(3, 30)));
+                            var sw = Stopwatch.StartNew();
+                            var sourceNode = data.Entrances[Constants.rnd.Next(data.Entrances.Count - 1)];
+                            var targetNode = data.Entrances.Where(n => n != sourceNode).ToList()[Constants.rnd.Next(data.Entrances.Count - 1)];
+                            search.ChangeStartEnd(graph.GetClosestNodeOutsideBuilding(sourceNode), graph.GetClosestNodeOutsideBuilding(targetNode));
+                            var path = search.GetShortestPathAstart();
+                            sw.Stop();
+                            if (path.Count != 1)
+                            {
+                                path.Insert(0, new Node(sourceNode));
+                                path.Add(new Node(targetNode));
+                                paths.Add(path);
+                                Characters.Add(new Character(path, Constants.rnd.Next(3, 30)));
+                            }
+                            else if (search.NodeVisits != 1)
+                            {
+                            }
                         }
-                        else if (search.NodeVisits != 1)
+                        else
                         {
+                            Thread.Sleep(1000);
                         }
                 }
                 }).Start();

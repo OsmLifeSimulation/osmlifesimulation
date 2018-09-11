@@ -2,7 +2,7 @@
 
 	});
 
-var map = new ol.Map({
+var map = new ol.WebGLMap({
 	target: 'map',
 	layers: [
 	  new ol.layer.Tile({

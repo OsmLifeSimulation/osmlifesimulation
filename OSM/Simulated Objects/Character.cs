@@ -57,7 +57,10 @@ namespace OSM.Simulated_Objects
                     remove = true;
                 }
             }
-            remove = false;
+            else
+            {
+                remove = false;
+            }
         }
 
         /// <summary>
