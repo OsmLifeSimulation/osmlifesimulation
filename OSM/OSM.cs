@@ -55,8 +55,11 @@ namespace OSM
             offset.X = -(data.area.Center.X - graphics.PreferredBackBufferWidth / 2);
             offset.Y = -(data.area.Center.Y - graphics.PreferredBackBufferHeight / 2);
 
-            Server.Init(offset);
-            ServerWebSocket.Init(Characters);
+            if (Settings.Presets.RunTcpSocketServer)
+                Server.Init(offset);
+
+            if (Settings.Presets.RunWebSocketServer)
+                ServerWebSocket.Init(Characters);
 
             for (int i = 0; i < Settings.Presets.AdditionalThreadsCount; i++)
             {
@@ -186,9 +189,12 @@ namespace OSM
                     {
                         Characters.Remove(character);
                     }
-                    /*Task.Run(() => { */
-                    Server.UpdateClientsWithCharacter(character)/*; })*/;
 
+                    if (Settings.Presets.RunTcpSocketServer)
+                    {
+                        /*Task.Run(() => { */
+                        Server.UpdateClientsWithCharacter(character)/*; })*/;
+                    }
                 }
             }
             catch (Exception)

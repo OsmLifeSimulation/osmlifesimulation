@@ -19,7 +19,11 @@ namespace OSM
         public string OsmFileName { get; set; } = "Map.osm";
 
         //Set 0 or less to make it infinite
-        public int CharactersMaxCount = 50;
+        public int CharactersMaxCount { get; set; } = 50;
+
+        public bool RunTcpSocketServer { get; set; } = false;
+
+        public bool RunWebSocketServer { get; set; } = true;
     }
 
     [XmlRoot(ElementName = "Controls")]
