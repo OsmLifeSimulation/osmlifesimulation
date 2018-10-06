@@ -1,59 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27703.2035
+VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSM", "OSM\OSM.csproj", "{E50A8F33-10E6-4633-85A6-A62372307533}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSMClient", "OSMClient\OSMClient.csproj", "{D3339D71-87F6-46F0-AC6C-4994E017B9E8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Global", "NetworkGlobalClasses\Global.csproj", "{38D1AE86-5358-4379-988F-37FFBD86404A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSM", "OSM\OSM.csproj", "{9DCC5075-B941-495C-B380-B56327BCC96E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E50A8F33-10E6-4633-85A6-A62372307533}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{E50A8F33-10E6-4633-85A6-A62372307533}.Debug|x64.ActiveCfg = Debug|x64
-		{E50A8F33-10E6-4633-85A6-A62372307533}.Debug|x64.Build.0 = Debug|x64
-		{E50A8F33-10E6-4633-85A6-A62372307533}.Debug|x86.ActiveCfg = Debug|x86
-		{E50A8F33-10E6-4633-85A6-A62372307533}.Debug|x86.Build.0 = Debug|x86
-		{E50A8F33-10E6-4633-85A6-A62372307533}.Release|Any CPU.ActiveCfg = Release|x86
-		{E50A8F33-10E6-4633-85A6-A62372307533}.Release|x64.ActiveCfg = Release|x64
-		{E50A8F33-10E6-4633-85A6-A62372307533}.Release|x86.ActiveCfg = Debug|x64
-		{E50A8F33-10E6-4633-85A6-A62372307533}.Release|x86.Build.0 = Debug|x64
-		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|x64.ActiveCfg = Debug|x86
-		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|x64.Build.0 = Debug|x86
-		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|x86.ActiveCfg = Debug|x86
-		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Debug|x86.Build.0 = Debug|x86
-		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Release|Any CPU.ActiveCfg = Release|x86
-		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Release|x64.ActiveCfg = Release|x86
-		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Release|x86.ActiveCfg = Release|x86
-		{D3339D71-87F6-46F0-AC6C-4994E017B9E8}.Release|x86.Build.0 = Release|x86
-		{38D1AE86-5358-4379-988F-37FFBD86404A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{38D1AE86-5358-4379-988F-37FFBD86404A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{38D1AE86-5358-4379-988F-37FFBD86404A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{38D1AE86-5358-4379-988F-37FFBD86404A}.Debug|x64.Build.0 = Debug|Any CPU
-		{38D1AE86-5358-4379-988F-37FFBD86404A}.Debug|x86.ActiveCfg = Debug|x86
-		{38D1AE86-5358-4379-988F-37FFBD86404A}.Debug|x86.Build.0 = Debug|x86
-		{38D1AE86-5358-4379-988F-37FFBD86404A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{38D1AE86-5358-4379-988F-37FFBD86404A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{38D1AE86-5358-4379-988F-37FFBD86404A}.Release|x64.ActiveCfg = Release|x64
-		{38D1AE86-5358-4379-988F-37FFBD86404A}.Release|x64.Build.0 = Release|x64
-		{38D1AE86-5358-4379-988F-37FFBD86404A}.Release|x86.ActiveCfg = Release|x86
-		{38D1AE86-5358-4379-988F-37FFBD86404A}.Release|x86.Build.0 = Release|x86
+		{9DCC5075-B941-495C-B380-B56327BCC96E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DCC5075-B941-495C-B380-B56327BCC96E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DCC5075-B941-495C-B380-B56327BCC96E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DCC5075-B941-495C-B380-B56327BCC96E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {E1ED5692-A3CE-4C9D-8459-57AF20F4ED58}
+		SolutionGuid = {043DF2CF-D791-42D1-BB4D-EE60834499BE}
 	EndGlobalSection
 EndGlobal

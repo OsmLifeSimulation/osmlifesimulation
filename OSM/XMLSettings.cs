@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,19 +20,6 @@ namespace OSM
         //Set 0 or less to make it infinite
         public int CharactersMaxCount { get; set; } = 50;
 
-        public bool RunTcpSocketServer { get; set; } = false;
-
         public bool RunWebSocketServer { get; set; } = true;
-    }
-
-    [XmlRoot(ElementName = "Controls")]
-    public class ControlsXml
-    {
-        public Keys SwitchGreed = Keys.G;
-
-        public List<Keys> Up { get; set; } = new List<Keys>() { Keys.Up, Keys.W };
-        public List<Keys> Down { get; set; } = new List<Keys>() { Keys.Down, Keys.S };
-        public List<Keys> Right { get; set; } = new List<Keys>() { Keys.Right, Keys.D };
-        public List<Keys> Left { get; set; } = new List<Keys>() { Keys.Left, Keys.A };
     }
 }

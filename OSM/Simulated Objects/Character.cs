@@ -1,5 +1,4 @@
-﻿using Global.NetworkData;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +19,8 @@ namespace OSM.Simulated_Objects
 
         Node next;
 
-        PointData pointData;
-        public PointData PointData { get {
-                pointData.Vector = Point.ToVector2();
-                return pointData;
-            } }
-
         public Character(List<Node> path, int deceleration)
         {
-            pointData = new PointData(Color.Red, 3);
             this.path = path;
             Point = path[0].Point;
             next = path.Count != 1 ? path[1] : path[0];

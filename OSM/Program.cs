@@ -1,22 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
 
 namespace OSM
 {
-#if WINDOWS || LINUX
-    /// <summary>
-    /// The main class.
-    /// </summary>
-    public static class Program
+    class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        static OSM OSM;
+        static Timer UpdateTimer;
+        static void Main(string[] args)
         {
-            using (var game = new OSM())
-                game.Run();
+            OSM = new OSM();
+
+            var startTimeSpan = TimeSpan.Zero;
+            var periodTimeSpan = TimeSpan.FromMilliseconds(50);
+            UpdateTimer = new Timer((e) =>
+            {
+                OSM.Update();
+            }, null, startTimeSpan, periodTimeSpan);
+
+            Console.WriteLine("Server started");
+            Console.ReadKey();
         }
     }
-#endif
 }
