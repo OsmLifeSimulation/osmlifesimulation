@@ -38,7 +38,7 @@ namespace OSM
                     while (true)
                     {
                         var maxCount = Settings.Presets.CharactersMaxCount;
-                        if (maxCount <= 0 || Characters.Count < maxCount)
+                        if (maxCount < 0 || Characters.Count < maxCount)
                         {
                             //TODO: run this code in new Thread, but we need to create new instance of SearchEngine with new isolated List<Node> (we need to copy it and all nodes in all edges)
                             //or maybe we can just wait until the same code is executed? ...and then create a new Thread

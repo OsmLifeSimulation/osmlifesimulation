@@ -17,9 +17,10 @@ namespace OSM
 
         public string OsmFileName { get; set; } = "Map.osm";
 
-        //Set 0 or less to make it infinite
+        //Set less than 0 to make it infinite
         public int CharactersMaxCount { get; set; } = 50;
 
         public bool RunWebSocketServer { get; set; } = true;
+        public string ServerPassword { get; set; } = "osm";
     }
 }

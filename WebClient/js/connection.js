@@ -13,9 +13,14 @@ websocket.onclose = function(evt)
 
 websocket.onmessage = function(evt)
 {
-	console.log("packet");
-	//console.log('RESPONSE: ' + evt.data);
-	SetCharacters(JSON.parse(evt.data));
+	var msg = evt.data;
+	if(msg[0] == "["){
+		//console.log("packet");
+		SetCharacters(JSON.parse(evt.data));
+	}
+	else {
+		console.log('RESPONSE: ' + msg);
+	}
 }
 
 websocket.onerror = function(evt)
