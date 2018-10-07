@@ -27,8 +27,15 @@ namespace OSM
 
         public async void SendMessageAsync(string message)
         {
-            await Socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(message)),
-                WebSocketMessageType.Text, true, CancellationToken.None);
+            try
+            {
+                await Socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(message)),
+                    WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception with message send");
+            }
         }
     }
 
@@ -78,32 +85,39 @@ namespace OSM
         {
             Client client = (Client)o;
 
-            while (true)
+            while (client.Socket.State == WebSocketState.Open)
             {
                 ArraySegment<Byte> buffer = new ArraySegment<byte>(new Byte[8192]);
 
                 WebSocketReceiveResult result = null;
 
-                using (var ms = new MemoryStream())
+                try
                 {
-                    do
+                    using (var ms = new MemoryStream())
                     {
-                        result = await client.Socket.ReceiveAsync(buffer, CancellationToken.None);
-                        ms.Write(buffer.Array, buffer.Offset, result.Count);
-                    }
-                    while (!result.EndOfMessage);
-
-                    ms.Seek(0, SeekOrigin.Begin);
-
-                    if (result.MessageType == WebSocketMessageType.Text)
-                    {
-                        using (var reader = new StreamReader(ms, Encoding.UTF8))
+                        do
                         {
-                            // do stuff
-                            var message = reader.ReadToEnd();
-                            HandleMessage(message, client);
+                            result = await client.Socket.ReceiveAsync(buffer, CancellationToken.None);
+                            ms.Write(buffer.Array, buffer.Offset, result.Count);
+                        }
+                        while (!result.EndOfMessage);
+
+                        ms.Seek(0, SeekOrigin.Begin);
+
+                        if (result.MessageType == WebSocketMessageType.Text)
+                        {
+                            using (var reader = new StreamReader(ms, Encoding.UTF8))
+                            {
+                                // do stuff
+                                var message = reader.ReadToEnd();
+                                HandleMessage(message, client);
+                            }
                         }
                     }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception with message receive");
                 }
             }
         }
@@ -186,6 +200,8 @@ namespace OSM
 
             Thread thread = new Thread(HandleClient);
             thread.Start(client);
+
+            Console.WriteLine("Client connected");
         }
     }
 }
