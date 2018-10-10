@@ -21,6 +21,7 @@ namespace OSM
         public int CharactersMaxCount { get; set; } = 50;
 
         public bool RunWebSocketServer { get; set; } = true;
+        public int WebSocketServerPort { get; set; } = 8080;
         public string ServerPassword { get; set; } = "osm";
     }
 }

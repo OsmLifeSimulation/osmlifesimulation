@@ -53,7 +53,7 @@ namespace OSM
         {
             Characters = characters;
 
-            httpListener.Prefixes.Add("http://localhost:8080/");
+            httpListener.Prefixes.Add("http://localhost:" + Settings.Presets.WebSocketServerPort + '/');
             httpListener.Start();
 
             var startTimeSpan = TimeSpan.Zero;

@@ -5,5 +5,6 @@
   <OsmFileName>Map.osm</OsmFileName>
   <CharactersMaxCount>50</CharactersMaxCount>
   <RunWebSocketServer>true</RunWebSocketServer>
+  <WebSocketServerPort>8080</WebSocketServerPort>
   <ServerPassword>osm</ServerPassword>
 </Presets>
