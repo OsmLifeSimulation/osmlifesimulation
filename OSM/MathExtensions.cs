@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace OSM
 {
@@ -129,7 +130,8 @@ namespace OSM
 
         public static Vector2 Deg2UTM(NodeXml node)
         {
-            return Deg2UTM(float.Parse(node.Lat), float.Parse(node.Lon));
+            return Deg2UTM(float.Parse(node.Lat, NumberStyles.Any, CultureInfo.InvariantCulture), 
+                float.Parse(node.Lon, NumberStyles.Any, CultureInfo.InvariantCulture));
         }
         public static Vector2 Deg2UTM(double lat, double lon)
         {
@@ -190,6 +192,7 @@ namespace OSM
             Letter = letter;
 
             return new Vector2(Convert.ToSingle(easting), Convert.ToSingle(northing));
+            
         }
 
         public static Vector2 UTM2Deg(Vector2 UTM)

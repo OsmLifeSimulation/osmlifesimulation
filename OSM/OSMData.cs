@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Globalization;
 
 namespace OSM
 {
@@ -65,8 +66,10 @@ namespace OSM
                 Entrances.Add(MathExtensions.LineCenter(new Line(building[index], building[index + 1])).ToPoint());
             }
 
-            var minLatLon = MathExtensions.Deg2UTM(double.Parse(rawData.Bounds.Maxlat), double.Parse(rawData.Bounds.Minlon)).ToPoint();
-            var maxLatLon = MathExtensions.Deg2UTM(double.Parse(rawData.Bounds.Minlat), double.Parse(rawData.Bounds.Maxlon)).ToPoint();
+            var minLatLon = MathExtensions.Deg2UTM(double.Parse(rawData.Bounds.Maxlat, NumberStyles.Any, CultureInfo.InvariantCulture), 
+                double.Parse(rawData.Bounds.Minlon, NumberStyles.Any, CultureInfo.InvariantCulture)).ToPoint();
+            var maxLatLon = MathExtensions.Deg2UTM(double.Parse(rawData.Bounds.Minlat, NumberStyles.Any, CultureInfo.InvariantCulture), 
+                double.Parse(rawData.Bounds.Maxlon, NumberStyles.Any, CultureInfo.InvariantCulture)).ToPoint();
 
             area = new Rectangle(minLatLon - Constants.AreaExtension,
                 maxLatLon - minLatLon + (Constants.AreaExtension + Constants.AreaExtension));
