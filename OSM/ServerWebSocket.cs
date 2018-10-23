@@ -34,7 +34,7 @@ namespace OSM
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception with message send");
+                //Console.WriteLine("Exception with message send");
             }
         }
     }
@@ -117,7 +117,7 @@ namespace OSM
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Exception with message receive");
+                    //Console.WriteLine("Exception with message receive");
                 }
             }
         }
