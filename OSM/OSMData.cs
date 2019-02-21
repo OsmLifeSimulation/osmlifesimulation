@@ -24,7 +24,7 @@ namespace OSM
         List<List<Vector2>> roadPoints { get; set; }
         List<Vector2> nodes { get; set; }
 
-        public List<Point> Entrances = new List<Point>();
+        public List<Point> Entrances { get; private set; } = new List<Point>();
 
         //public Graph MovementsGraph { get; private set; }
 
@@ -62,7 +62,7 @@ namespace OSM
             //create Entrances
             foreach (var building in buildingPoints)
             {
-                var index = Constants.rnd.Next(building.Count - 2);
+                var index = Constants.Rnd.Next(building.Count - 2);
                 Entrances.Add(MathExtensions.LineCenter(new Line(building[index], building[index + 1])).ToPoint());
             }
 

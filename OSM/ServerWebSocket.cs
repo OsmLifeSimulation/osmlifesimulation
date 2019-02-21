@@ -1,5 +1,4 @@
-﻿using OSM.Simulated_Objects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
+using Microsoft.Xna.Framework;
 
 namespace OSM
 {
@@ -17,7 +17,7 @@ namespace OSM
         public WebSocket Socket { get; private set; }
         public ClientRole Role { get; set; }
 
-        public enum ClientRole { User, Admin}
+        public enum ClientRole { User, Admin }
 
         public Client(WebSocket socket)
         {
@@ -44,14 +44,13 @@ namespace OSM
         static List<Client> Clients = new List<Client>();
         static HttpListener httpListener = new HttpListener();
 
-        public static List<Character> Characters { get; set; }
-
+        public static ModulesLibrary ModulesLibrary { get; set; }
 
         static Timer UpdateTimer;
 
-        public static void Init(List<Character> characters)
+        public static void Init(ModulesLibrary modulesLibrary)
         {
-            Characters = characters;
+            ModulesLibrary = modulesLibrary;
 
             httpListener.Prefixes.Add("http://localhost:" + Settings.Presets.WebSocketServerPort + '/');
             httpListener.Start();
@@ -177,7 +176,7 @@ namespace OSM
 
         private static void Update()
         {
-            var coordinates = Characters.ToList().Select(c => MathExtensions.UTM2Deg(c.Point.ToVector2()))
+            var coordinates = ModulesLibrary.DrawableData.ToList().Select(c => MathExtensions.UTM2Deg(c.ToVector2()))
                 .Select(v => new[] { v.Y, v.X }).ToList();
             var jsonData = JsonConvert.SerializeObject(coordinates);
 

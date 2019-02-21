@@ -21,13 +21,16 @@ namespace OSM
         //original size is 1
         public const float Resize = 1;
 
-        public static Random rnd { get; private set; } = new Random();
+        public static Random Rnd { get; private set; } = new Random();
 
         public const string OsmFolderPath = @"maps/";
 
         const string SettingsFolderPath = @"settings/";
         public const string PresetsPath = SettingsFolderPath + "Presets";
         public const string ControlsPath = SettingsFolderPath + "Controls";
+
+        public const string ModulesPath = @"modules/";
+        public const string ModuleIdentifier = "MainModule";
 
         public static T DeserializeXmlOrCreateNew<T>(string path)
         {
