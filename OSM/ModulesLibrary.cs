@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using OSMGlobalLibrary.SuperModule;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +12,7 @@ namespace OSM
 {
     class ModulesLibrary
     {
-        public Dictionary<string, dynamic> modules = new Dictionary<string, dynamic>();
+        public Dictionary<string, OSMModule> modules = new Dictionary<string, OSMModule>();
         public List<Point> DrawableData {
             get
             {
@@ -29,9 +30,9 @@ namespace OSM
 
                     foreach (Type type in DLL.GetExportedTypes())
                     {
-                        if (type.FullName.Contains(Constants.ModuleIdentifier))
+                        if (type.IsSubclassOf(typeof(OSMModule)))
                         {
-                            modules[Regex.Match(type.FullName.Split('.').Last(), @"(.+)" + Constants.ModuleIdentifier).Groups[1].Value]= Activator.CreateInstance(type, data, modules);
+                            modules[Regex.Match(type.FullName.Split('.').Last(), @"(.+)" + Constants.ModuleIdentifier).Groups[1].Value]= (OSMModule)Activator.CreateInstance(type, data, modules);
                         }
                     }
                 }

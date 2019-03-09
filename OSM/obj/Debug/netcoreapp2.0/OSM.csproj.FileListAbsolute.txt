@@ -86,3 +86,5 @@ C:\Users\BUROVIC\Source\Repos\osmlifesimulation2\OSM\obj\Debug\netcoreapp2.0\OSM
 C:\Users\BUROVIC\Source\Repos\osmlifesimulation2\OSM\obj\Debug\netcoreapp2.0\OSM.csproj.CopyComplete
 C:\Users\BUROVIC\Source\Repos\osmlifesimulation2\OSM\obj\Debug\netcoreapp2.0\OSM.dll
 C:\Users\BUROVIC\Source\Repos\osmlifesimulation2\OSM\obj\Debug\netcoreapp2.0\OSM.pdb
+C:\Users\BUROVIC\Source\Repos\osmlifesimulation2\OSM\bin\Debug\netcoreapp2.0\OSMGlobalLibrary.dll
+C:\Users\BUROVIC\Source\Repos\osmlifesimulation2\OSM\bin\Debug\netcoreapp2.0\OSMGlobalLibrary.pdb

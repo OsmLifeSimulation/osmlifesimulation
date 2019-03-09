@@ -9,7 +9,8 @@
       "OSM/1.0.0": {
         "dependencies": {
           "Newtonsoft.Json": "11.0.2",
-          "MonoGame.Framework": "3.7.1.189"
+          "MonoGame.Framework": "3.7.1.189",
+          "OSMGlobalLibrary": "1.0.0.0"
         },
         "runtime": {
           "OSM.dll": {}
@@ -28,6 +29,14 @@
           "MonoGame.Framework.dll": {
             "assemblyVersion": "3.7.1.189",
             "fileVersion": "3.7.1.189"
+          }
+        }
+      },
+      "OSMGlobalLibrary/1.0.0.0": {
+        "runtime": {
+          "OSMGlobalLibrary.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -103,6 +112,11 @@
       "hashPath": "newtonsoft.json.11.0.2.nupkg.sha512"
     },
     "MonoGame.Framework/3.7.1.189": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "OSMGlobalLibrary/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
