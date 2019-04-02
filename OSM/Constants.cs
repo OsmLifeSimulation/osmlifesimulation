@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using OSMGlobalLibrary.SuperModule;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -61,6 +62,24 @@ namespace OSM
             reader.Close();
 
             return obj;
+        }
+
+        public static void Log(string msg, OSMModule module = null)
+        {
+
+            //TODO: create file loging
+            string logMessage = String.Format("\n{0}: {1} - {2}", module == null ? "MainProgram" : module.ToString(), msg, DateTime.Now);
+
+            //File.AppendAllText(@"log.txt", logMessage);
+
+            //using (var stream = new FileStream("log.txt", FileMode.Open, FileAccess.ReadWrite))
+            //{
+            //    // Use stream
+            //    stream.Write(new UTF8Encoding(true).GetBytes(logMessage), 0, logMessage.Length);
+            //    stream.Close();
+            //}
+
+            Console.WriteLine(logMessage);
         }
     }
 }
