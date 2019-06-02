@@ -722,11 +722,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\BUROVIC\\Source\\Repos\\osmlifesimulation2\\OSM\\OSM.csproj",
+      "projectUniqueName": "C:\\Users\\BUROVIC\\Source\\Repos\\osmlifesimulation\\OSM\\OSM.csproj",
       "projectName": "OSM",
-      "projectPath": "C:\\Users\\BUROVIC\\Source\\Repos\\osmlifesimulation2\\OSM\\OSM.csproj",
+      "projectPath": "C:\\Users\\BUROVIC\\Source\\Repos\\osmlifesimulation\\OSM\\OSM.csproj",
       "packagesPath": "C:\\Users\\BUROVIC\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\BUROVIC\\Source\\Repos\\osmlifesimulation2\\OSM\\obj\\",
+      "outputPath": "C:\\Users\\BUROVIC\\Source\\Repos\\osmlifesimulation\\OSM\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Global;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Globalization;
+using OSMGlobalLibrary;
 
 namespace OSM
 {
@@ -33,12 +33,12 @@ namespace OSM
             rawData = Constants.DeserializeXml<OsmXml>(Constants.OsmFolderPath + Settings.Presets.OsmFileName);
 
             buildingPoints = rawData.Way.Where(w => w.Tag.Exists(t => t.K == "building" && t.V == "yes"))
-                .Select(w => w.Nd.Select(n => MathExtensions.Deg2UTM(rawData.Node.First(node => node.Id == n.Ref))).ToList()).ToList();
+                .Select(w => w.Nd.Select(n => Deg2UTM(rawData.Node.First(node => node.Id == n.Ref))).ToList()).ToList();
 
             roadPoints = rawData.Way.Where(w => w.Tag.Exists(t => t.K == "highway"))
-                .Select(w => w.Nd.Select(n => MathExtensions.Deg2UTM(rawData.Node.First(node => node.Id == n.Ref))).ToList()).ToList();
+                .Select(w => w.Nd.Select(n => Deg2UTM(rawData.Node.First(node => node.Id == n.Ref))).ToList()).ToList();
 
-            nodes = rawData.Node.Where(n => n.Tag.Any()).Select(n => MathExtensions.Deg2UTM(n)).ToList();
+            nodes = rawData.Node.Where(n => n.Tag.Any()).Select(n => Deg2UTM(n)).ToList();
 
             foreach (var build in buildingPoints)
             {
@@ -74,6 +74,12 @@ namespace OSM
             area = new Rectangle(minLatLon - Constants.AreaExtension,
                 maxLatLon - minLatLon + (Constants.AreaExtension + Constants.AreaExtension));
 
+        }
+
+        public static Vector2 Deg2UTM(NodeXml node)
+        {
+            return MathExtensions.Deg2UTM(float.Parse(node.Lat, NumberStyles.Any, CultureInfo.InvariantCulture),
+                float.Parse(node.Lon, NumberStyles.Any, CultureInfo.InvariantCulture));
         }
 
         public Graph CreateGraph()

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
 using Microsoft.Xna.Framework;
+using OSMGlobalLibrary;
 
 namespace OSM
 {
