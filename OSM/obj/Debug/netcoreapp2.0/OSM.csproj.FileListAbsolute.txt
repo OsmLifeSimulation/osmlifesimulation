@@ -27,3 +27,4 @@ C:\Users\BUROVIC\Source\Repos\osmlifesimulation\OSM\obj\Debug\netcoreapp2.0\OSM.
 C:\Users\BUROVIC\Source\Repos\osmlifesimulation\OSM\obj\Debug\netcoreapp2.0\OSM.csproj.CopyComplete
 C:\Users\BUROVIC\Source\Repos\osmlifesimulation\OSM\obj\Debug\netcoreapp2.0\OSM.dll
 C:\Users\BUROVIC\Source\Repos\osmlifesimulation\OSM\obj\Debug\netcoreapp2.0\OSM.pdb
+C:\Users\BUROVIC\Source\Repos\osmlifesimulation\OSM\obj\Debug\netcoreapp2.0\OSM.csprojAssemblyReference.cache

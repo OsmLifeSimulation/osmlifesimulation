@@ -13,10 +13,10 @@ namespace OSM
     class ModulesLibrary
     {
         public Dictionary<string, OSMModule> modules = new Dictionary<string, OSMModule>();
-        public List<Point> DrawableData {
+        public List<(List<Point>, string)> DrawableData {
             get
             {
-                return modules.SelectMany(m => (List<Point>)m.Value.DrawableData()).ToList();
+                return modules.SelectMany(m => m.Value.DrawableData()).ToList();
             }
         }
 

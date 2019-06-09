@@ -177,8 +177,7 @@ namespace OSM
 
         private static void Update()
         {
-            var coordinates = ModulesLibrary.DrawableData.ToList().Select(c => MathExtensions.UTM2Deg(c.ToVector2()))
-                .Select(v => new[] { v.Y, v.X }).ToList();
+            var coordinates = ModulesLibrary.DrawableData.Select(t => (t.Item1.Select(c => MathExtensions.UTM2Deg(c.ToVector2())), t.Item2)).ToList();
             var jsonData = JsonConvert.SerializeObject(coordinates);
 
             foreach (var client in Clients.ToList())
