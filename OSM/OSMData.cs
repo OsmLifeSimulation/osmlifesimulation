@@ -17,8 +17,8 @@ namespace OSM
 
         public Rectangle area;
 
-        public List<Line> BuildingLines { get; private set; } = new List<Line>();
-        public List<Line> RoadLines { get; private set; } = new List<Line>();
+        public List<List<Line>> BuildingsLines { get; private set; } = new List<List<Line>>();
+        public List<List<Line>> RoadsLines { get; private set; } = new List<List<Line>>();
 
         List<List<Vector2>> buildingPoints { get; set; }
         List<List<Vector2>> roadPoints { get; set; }
@@ -42,21 +42,25 @@ namespace OSM
 
             foreach (var build in buildingPoints)
             {
+                var buildingLines = new List<Line>();
                 for (int i = 0; i < build.Count; i++)
                 {
                     int next = i == build.Count - 1 ? 0 : i + 1;
-                    BuildingLines.Add(new Line(build[i], build[next]));
+                    buildingLines.Add(new Line(build[i], build[next]));
                 }
+                BuildingsLines.Add(buildingLines);
             }
             foreach (var road in roadPoints)
             {
+                var roadLines = new List<Line>();
                 for (int i = 0; i < road.Count; i++)
                 {
                     if (i != road.Count - 1)
                     {
-                        RoadLines.Add(new Line(road[i], road[i + 1]));
+                        roadLines.Add(new Line(road[i], road[i + 1]));
                     }
                 }
+                RoadsLines.Add(roadLines);
             }
 
             //create Entrances
@@ -84,7 +88,7 @@ namespace OSM
 
         public Graph CreateGraph()
         {
-            return new Graph(area, BuildingLines, RoadLines, buildingPoints);
+            return new Graph(area, BuildingsLines.SelectMany(x => x).ToList(), RoadsLines.SelectMany(x => x).ToList(), buildingPoints);
         }
     }
 }
