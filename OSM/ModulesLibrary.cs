@@ -36,9 +36,11 @@ namespace OSM
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception exeption)
                 {
-                    Console.WriteLine("DLL " + file + " can't be loaded as a module");
+                    Console.WriteLine("DLL " + file + " can't be loaded as a module. Inner Exception:\n" + exeption.InnerException);
+                    Console.WriteLine("Press Enter to continue...");
+                    Console.ReadLine();
                 }
             }
         }
