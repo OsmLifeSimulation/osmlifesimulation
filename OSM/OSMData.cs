@@ -13,7 +13,7 @@ namespace OSM
 {
     class OSMData
     {
-        private OsmXml rawData { get; set; }
+        public OsmXml RawData { get; private set; }
 
         public Rectangle area;
 
@@ -30,15 +30,15 @@ namespace OSM
 
         public OSMData()
         {
-            rawData = Constants.DeserializeXml<OsmXml>(Constants.OsmFolderPath + Settings.Presets.OsmFileName);
+            RawData = Constants.DeserializeXml<OsmXml>(Constants.OsmFolderPath + Settings.Presets.OsmFileName);
 
-            buildingPoints = rawData.Way.Where(w => w.Tag.Exists(t => t.K == "building" && t.V == "yes"))
-                .Select(w => w.Nd.Select(n => Deg2UTM(rawData.Node.First(node => node.Id == n.Ref))).ToList()).ToList();
+            buildingPoints = RawData.Way.Where(w => w.Tag.Exists(t => t.K == "building" && t.V == "yes"))
+                .Select(w => w.Nd.Select(n => Deg2UTM(RawData.Node.First(node => node.Id == n.Ref))).ToList()).ToList();
 
-            roadPoints = rawData.Way.Where(w => w.Tag.Exists(t => t.K == "highway"))
-                .Select(w => w.Nd.Select(n => Deg2UTM(rawData.Node.First(node => node.Id == n.Ref))).ToList()).ToList();
+            roadPoints = RawData.Way.Where(w => w.Tag.Exists(t => t.K == "highway"))
+                .Select(w => w.Nd.Select(n => Deg2UTM(RawData.Node.First(node => node.Id == n.Ref))).ToList()).ToList();
 
-            nodes = rawData.Node.Where(n => n.Tag.Any()).Select(n => Deg2UTM(n)).ToList();
+            nodes = RawData.Node.Where(n => n.Tag.Any()).Select(n => Deg2UTM(n)).ToList();
 
             foreach (var build in buildingPoints)
             {
@@ -70,10 +70,10 @@ namespace OSM
                 Entrances.Add(MathExtensions.LineCenter(new Line(building[index], building[index + 1])).ToPoint());
             }
 
-            var minLatLon = MathExtensions.Deg2UTM(double.Parse(rawData.Bounds.Maxlat, NumberStyles.Any, CultureInfo.InvariantCulture), 
-                double.Parse(rawData.Bounds.Minlon, NumberStyles.Any, CultureInfo.InvariantCulture)).ToPoint();
-            var maxLatLon = MathExtensions.Deg2UTM(double.Parse(rawData.Bounds.Minlat, NumberStyles.Any, CultureInfo.InvariantCulture), 
-                double.Parse(rawData.Bounds.Maxlon, NumberStyles.Any, CultureInfo.InvariantCulture)).ToPoint();
+            var minLatLon = MathExtensions.Deg2UTM(double.Parse(RawData.Bounds.Maxlat, NumberStyles.Any, CultureInfo.InvariantCulture), 
+                double.Parse(RawData.Bounds.Minlon, NumberStyles.Any, CultureInfo.InvariantCulture)).ToPoint();
+            var maxLatLon = MathExtensions.Deg2UTM(double.Parse(RawData.Bounds.Minlat, NumberStyles.Any, CultureInfo.InvariantCulture), 
+                double.Parse(RawData.Bounds.Maxlon, NumberStyles.Any, CultureInfo.InvariantCulture)).ToPoint();
 
             area = new Rectangle(minLatLon - Constants.AreaExtension,
                 maxLatLon - minLatLon + (Constants.AreaExtension + Constants.AreaExtension));
