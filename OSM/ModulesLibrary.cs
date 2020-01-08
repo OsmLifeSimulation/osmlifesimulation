@@ -1,26 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using OSMGlobalLibrary.SuperModule;
+﻿using OSMLSGlobalLibrary;
+using OSMLSGlobalLibrary.Modules;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace OSM
 {
     class ModulesLibrary
     {
-        public Dictionary<string, OSMModule> modules = new Dictionary<string, OSMModule>();
-        public List<(List<Point>, string)> DrawableData {
-            get
-            {
-                return modules.SelectMany(m => m.Value.DrawableData()).ToList();
-            }
-        }
+        public Dictionary<string, OSMLSModule> modules = new Dictionary<string, OSMLSModule>();
 
-        public ModulesLibrary(OSMData data)
+        public ModulesLibrary(OsmXml rawData, MapObjectsCollection mapObjects)
         {
             foreach (string file in Directory.EnumerateFiles(Constants.ModulesPath, "*.dll"))
             {
@@ -30,9 +21,9 @@ namespace OSM
 
                     foreach (Type type in DLL.GetExportedTypes())
                     {
-                        if (type.IsSubclassOf(typeof(OSMModule)))
+                        if (type.IsSubclassOf(typeof(OSMLSModule)))
                         {
-                            modules[Regex.Match(type.FullName.Split('.').Last(), @"(.+)" + Constants.ModuleIdentifier).Groups[1].Value]= (OSMModule)Activator.CreateInstance(type, data, modules);
+                            modules[type.Name] = (OSMLSModule)Activator.CreateInstance(type, rawData, modules, mapObjects);
                         }
                     }
                 }

@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using OSMGlobalLibrary.SuperModule;
+﻿using OSMLSGlobalLibrary.Modules;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace OSM
@@ -16,8 +11,6 @@ namespace OSM
         public const int
             XCorr = 0,
             YCorr = 0;
-
-        public static Point AreaExtension { get; private set; } = new Point(1000, 1000);
 
         //original size is 1
         public const float Resize = 1;
@@ -64,7 +57,7 @@ namespace OSM
             return obj;
         }
 
-        public static void Log(string msg, OSMModule module = null)
+        public static void Log(string msg, OSMLSModule module = null)
         {
 
             //TODO: create file loging

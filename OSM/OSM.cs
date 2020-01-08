@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
+﻿using OSMLSGlobalLibrary;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
 
 namespace OSM
 {
@@ -12,22 +7,22 @@ namespace OSM
     {
         Stopwatch TimeNow = new Stopwatch();
 
-        OSMData data;
+        OsmXml RawData;
 
         ModulesLibrary ModulesLibrary { get; set; }
+
+        MapObjectsCollection MapObjects { get; } = new MapObjectsCollection();
 
         public OSM()
         {
             TimeNow.Start();
             Settings.Init();
 
-            data = new OSMData();
-            ModulesLibrary = new ModulesLibrary(data);
+            RawData = Constants.DeserializeXml<OsmXml>(Constants.OsmFolderPath + Settings.Presets.OsmFileName);
+            ModulesLibrary = new ModulesLibrary(RawData, MapObjects);
 
             if (Settings.Presets.RunWebSocketServer)
-                ServerWebSocket.Init(ModulesLibrary);
-
-            PathFinding.Init(data);
+                ServerWebSocket.Init(ModulesLibrary, MapObjects);
         }
 
         /// <summary>
