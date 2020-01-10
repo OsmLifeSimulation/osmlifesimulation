@@ -5,10 +5,9 @@ using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
+using NetTopologySuite.Features;
 using Newtonsoft.Json;
-using OSMLSGlobalLibrary.Map;
-using GeoJSON.Net.Feature;
-using GeoJSON.Net.CoordinateReferenceSystem;
+using OSMLSGlobalLibrary;
 
 namespace OSM
 {
@@ -86,8 +85,8 @@ namespace OSM
                 .GetTypeItems()
                 .Select(ti =>
                     (ti.type.ToString(),
-                    new FeatureCollection(ti.mapObjects.Select(mo => new Feature(mo.Geometry)).ToList()) { CRS = new NamedCRS("EPSG:3857") },
-                    ((MapObjectAttribute)ti.type.GetCustomAttributes(typeof(MapObjectAttribute), false).First()).Style)
+                    "{\"type\":\"FeatureCollection\", \"features\":" + Constants.GeoJsonWriter.Write(new FeatureCollection().Concat(ti.mapObjects.Select(mo => new Feature(mo, new AttributesTable())).ToList())) + "}",
+                    ((CustomStyleAttribute)ti.type.GetCustomAttributes(typeof(CustomStyleAttribute), false).FirstOrDefault())?.Style ?? Constants.DefaultStyle)
                 )
                 .Where(x => x.ToTuple().Item3 != null);
 

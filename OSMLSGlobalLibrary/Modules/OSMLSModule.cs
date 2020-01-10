@@ -1,4 +1,4 @@
-﻿using OSMLSGlobalLibrary.Map;
+﻿using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +10,11 @@ namespace OSMLSGlobalLibrary.Modules
     {
         protected Dictionary<string, OSMLSModule> anotherModules { get; }
 
-        protected InheritanceTreeCollection<MapObject> MapObjects { get; }
+        protected InheritanceTreeCollection<Geometry> MapObjects { get; }
 
         protected List<Type> types;
 
-        public OSMLSModule(OsmXml rawData, Dictionary<string, OSMLSModule> modules, InheritanceTreeCollection<MapObject> mapObjects)
+        public OSMLSModule(OsmXml rawData, Dictionary<string, OSMLSModule> modules, InheritanceTreeCollection<Geometry> mapObjects)
         {
             types = Assembly.GetEntryAssembly().GetTypes().Where(x => x.IsClass).ToList();
             anotherModules = modules;

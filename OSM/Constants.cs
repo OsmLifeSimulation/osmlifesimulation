@@ -1,4 +1,5 @@
-﻿using OSMLSGlobalLibrary.Modules;
+﻿using NetTopologySuite.IO;
+using OSMLSGlobalLibrary.Modules;
 using System;
 using System.IO;
 using System.Xml.Serialization;
@@ -17,6 +18,8 @@ namespace OSM
 
         public static Random Rnd { get; private set; } = new Random();
 
+        public static GeoJsonWriter GeoJsonWriter { get; } = new GeoJsonWriter();
+
         public const string OsmFolderPath = @"maps/";
 
         const string SettingsFolderPath = @"settings/";
@@ -26,6 +29,28 @@ namespace OSM
         public const string ModulesPath = @"modules/";
         public const string ModuleIdentifier = "MainModule";
 
+        public const string DefaultStyle =
+            @"image: new ol.style.Circle({
+                opacity: 1.0,
+                scale: 1.0,
+                radius: 3,
+                fill: new ol.style.Fill({
+                  color: 'rgba(255, 255, 255, 0.4)'
+                }),
+                stroke: new ol.style.Stroke({
+                  color: 'rgba(0, 0, 0, 0.4)',
+                  width: 1
+                }),
+            }),
+            fill: new ol.style.Fill({
+                color: 'rgba(255, 255, 255, 0.4)'
+            }),
+            stroke: new ol.style.Stroke({
+                color: 'rgba(0, 0, 0, 0.4)',
+                width: 1
+            })
+        ";
+
         public static T DeserializeXmlOrCreateNew<T>(string path)
         {
             try
@@ -34,7 +59,7 @@ namespace OSM
             }
             catch (Exception)
             {
-                var obj = (T)Activator.CreateInstance(typeof(T), new object[] {});
+                var obj = (T)Activator.CreateInstance(typeof(T), new object[] { });
                 SerializeXml(path, obj);
                 return obj;
             }
@@ -47,7 +72,7 @@ namespace OSM
             serializer.Serialize(reader, obj);
             reader.Close();
         }
-        public static T DeserializeXml<T>(string path) 
+        public static T DeserializeXml<T>(string path)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
             StreamReader reader = new StreamReader(path);

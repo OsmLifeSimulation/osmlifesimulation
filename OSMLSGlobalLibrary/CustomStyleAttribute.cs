@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace OSMLSGlobalLibrary.Map
+namespace OSMLSGlobalLibrary
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class MapObjectAttribute : Attribute
+    public class CustomStyleAttribute : Attribute
     {
         public string Style { get; set; }
 
-        public MapObjectAttribute(string style)
+        public CustomStyleAttribute(string style)
         {
             Style = style;
         }
