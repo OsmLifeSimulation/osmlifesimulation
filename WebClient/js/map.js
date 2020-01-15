@@ -28,7 +28,7 @@ function SetCharacters(allNewData) {
 		}
 		else{
 			var vectorLayer = new ol.layer.Vector({
-				style: eval("new ol.style.Style({" + currentNewData.Item3 + "});")
+				style: eval(currentNewData.Item3)
 			});
 			vectorLayer.set('layerType', layerType);
 			vectorLayer.setSource(vectorSource);
