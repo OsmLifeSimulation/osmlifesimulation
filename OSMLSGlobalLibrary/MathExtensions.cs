@@ -13,8 +13,8 @@ namespace OSMLSGlobalLibrary
         /// <returns>Spherical mercator projection.</returns>
         public static Coordinate LatLonToSpherMerc(double latitude, double longitude)
         {
-            latitude = latitude * (Math.PI / 180);
-            longitude = longitude * (Math.PI / 180);
+            latitude *= (Math.PI / 180);
+            longitude *= (Math.PI / 180);
 
             double a = 6378137.0;
 

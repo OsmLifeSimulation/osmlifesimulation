@@ -85,7 +85,7 @@ namespace OSM
                 .GetTypeItems()
                 .Select(ti =>
                     (ti.type.ToString(),
-                    "{\"type\":\"FeatureCollection\", \"features\":" + Constants.GeoJsonWriter.Write(new FeatureCollection().Concat(ti.mapObjects.Select(mo => new Feature(mo, new AttributesTable())).ToList())) + "}",
+                    "{\"type\":\"FeatureCollection\", \"features\":" + Constants.GeoJsonWriter.Write(new FeatureCollection().Concat(ti.mapObjects.Select(mo => mo.Feature).ToList())) + "}",
                     ((CustomStyleAttribute)ti.type.GetCustomAttributes(typeof(CustomStyleAttribute), false).FirstOrDefault())?.Style ?? Constants.DefaultStyle)
                 )
                 .Where(x => x.ToTuple().Item3 != null);

@@ -1,20 +1,21 @@
 ﻿using NetTopologySuite.Geometries;
 using OSMLSGlobalLibrary;
+using OSMLSGlobalLibrary.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace OSM
 {
-    public class MapObjectsCollection : InheritanceTreeCollection<Geometry>
+    public class MapObjectsCollection : InheritanceTreeCollection<MapObject>
     {
         Type itemsType;
-        HashSet<Geometry> items = new HashSet<Geometry>();
+        HashSet<MapObject> items = new HashSet<MapObject>();
         Dictionary<Type, MapObjectsCollection> inheritors = new Dictionary<Type, MapObjectsCollection>();
 
         public MapObjectsCollection()
         {
-            itemsType = typeof(Geometry);
+            itemsType = typeof(MapObject);
         }
 
         MapObjectsCollection(Type type)
@@ -31,15 +32,15 @@ namespace OSM
             return resultType;
         }
 
-        public List<(Type type, HashSet<Geometry> mapObjects)> GetTypeItems()
+        public List<(Type type, HashSet<MapObject> mapObjects)> GetTypeItems()
         {
-            List<(Type type, HashSet<Geometry>)> typeItems = new List<(Type type, HashSet<Geometry>)>();
+            List<(Type type, HashSet<MapObject>)> typeItems = new List<(Type type, HashSet<MapObject>)>();
             GetTypeItems(typeItems);
 
             return typeItems;
         }
 
-        void GetTypeItems(List<(Type, HashSet<Geometry>)> typeItems)
+        void GetTypeItems(List<(Type, HashSet<MapObject>)> typeItems)
         {
             typeItems.Add((itemsType, GetInternal(itemsType)));
 
@@ -49,7 +50,7 @@ namespace OSM
             }
         }
 
-        HashSet<Geometry> GetInternal(Type type)
+        HashSet<MapObject> GetInternal(Type type)
         {
             if (type == itemsType)
             {
@@ -66,7 +67,7 @@ namespace OSM
             return Get(typeof(T)).Cast<T>().ToList();
         }
 
-        public override List<Geometry> Get(Type type)
+        public override List<MapObject> Get(Type type)
         {
             return GetInternal(type).ToList();
         }
@@ -76,7 +77,7 @@ namespace OSM
             return GetAll(typeof(T)).Cast<T>().ToList();
         }
 
-        public override List<Geometry> GetAll(Type type)
+        public override List<MapObject> GetAll(Type type)
         {
             if (type == itemsType)
             {
@@ -88,7 +89,7 @@ namespace OSM
             }
         }
 
-        public override void Add(Geometry item)
+        public override void Add(MapObject item)
         {
             var itemType = item.GetType();
 
@@ -108,7 +109,7 @@ namespace OSM
             }
         }
 
-        public override void Remove(Geometry item)
+        public override void Remove(MapObject item)
         {
             GetInternal(item.GetType()).Remove(item);
         }
