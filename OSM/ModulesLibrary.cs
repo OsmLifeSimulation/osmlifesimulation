@@ -41,6 +41,7 @@ namespace OSM
                 try
                 {
                     modules[type.Name] = (OSMLSModule)Activator.CreateInstance(type, rawData, modules, mapObjects);
+                    Console.WriteLine($"{type.Name} initialized.");
                 }
                 catch (Exception exeption)
                 {
