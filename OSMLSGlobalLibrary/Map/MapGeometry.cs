@@ -1,5 +1,4 @@
-﻿using NetTopologySuite.Features;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
 
 namespace OSMLSGlobalLibrary.Map
 {
@@ -7,13 +6,11 @@ namespace OSMLSGlobalLibrary.Map
     {
         public GeometryType Geometry { get; }
 
-        public AttributesTable Attributes { get; } = new AttributesTable();
-
         public MapGeometry(GeometryType geometry)
         {
             Geometry = geometry;
         }
 
-        public sealed override Feature Feature { get { return new Feature(Geometry, Attributes); } }
+        public override Geometry BaseGeometry { get { return Geometry; } }
     }
 }
