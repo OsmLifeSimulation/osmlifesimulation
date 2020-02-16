@@ -26,7 +26,7 @@ namespace OSMLS
 
             if (presets.RunWebSocketServer)
             {
-                var webSocketServer = new WebSocketServer(presets.WebSocketServerPort, osm.MapObjects);
+                var webSocketServer = new WebSocketServer(presets.WebSocketServerUri, osm.MapObjects);
 
                 var startTimeSpan = TimeSpan.Zero;
                 var periodTimeSpan = TimeSpan.FromSeconds(1);
