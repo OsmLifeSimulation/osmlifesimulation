@@ -2,15 +2,16 @@
 
 namespace OSMLSGlobalLibrary.Map
 {
-    public class MapGeometry<GeometryType> : MapObject where GeometryType : Geometry
+    [CustomStyle]
+    public class MapGeometry<TGeometry> : MapObject where TGeometry : Geometry
     {
-        public GeometryType Geometry { get; }
+        public TGeometry Geometry { get; }
 
-        public MapGeometry(GeometryType geometry)
+        public MapGeometry(TGeometry geometry)
         {
             Geometry = geometry;
         }
 
-        public override Geometry BaseGeometry { get { return Geometry; } }
+        public override Geometry BaseGeometry => Geometry;
     }
 }

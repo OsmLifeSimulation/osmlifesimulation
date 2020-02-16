@@ -1,4 +1,4 @@
-var wsUri = "ws://localhost:8080/";
+var wsUri = "ws://localhost:61104/";
 var websocket = new WebSocket(wsUri);
 
 websocket.onopen = function (evt) {
