@@ -2,6 +2,7 @@
 
 namespace OSMLSGlobalLibrary.Map
 {
+    [CustomStyle]
     public class MapGeometry<TGeometry> : MapObject where TGeometry : Geometry
     {
         public TGeometry Geometry { get; }

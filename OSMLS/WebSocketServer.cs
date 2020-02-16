@@ -8,7 +8,7 @@ using System.Threading;
 using NetTopologySuite.Features;
 using NetTopologySuite.IO;
 using Newtonsoft.Json;
-using OSMLSGlobalLibrary;
+using OSMLSGlobalLibrary.Map;
 
 namespace OSMLS
 {
@@ -86,7 +86,7 @@ namespace OSMLS
                 .Select(ti =>
                     (ti.type.ToString(),
                     "{\"type\":\"FeatureCollection\", \"features\":" + GeoJsonWriter.Write(new FeatureCollection().Concat(ti.mapObjects.Select(mo => mo.Feature).ToList())) + "}",
-                    ((CustomStyleAttribute)ti.type.GetCustomAttributes(typeof(CustomStyleAttribute), false).FirstOrDefault())?.Style ?? Constants.DefaultStyle)
+                    ((CustomStyleAttribute)ti.type.GetCustomAttributes(typeof(CustomStyleAttribute), false).FirstOrDefault())?.Style)
                 )
                 .Where(x => x.ToTuple().Item3 != null);
 
