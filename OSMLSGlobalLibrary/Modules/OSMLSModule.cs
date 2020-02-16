@@ -1,56 +1,47 @@
-﻿using OSMLSGlobalLibrary.Map;
-using System;
+﻿using System;
+using OSMLSGlobalLibrary.Map;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace OSMLSGlobalLibrary.Modules
 {
     public abstract class OSMLSModule
     {
-        protected Dictionary<string, OSMLSModule> anotherModules { get; }
+        protected OsmXml RawData { get; private set; }
 
-        protected InheritanceTreeCollection<MapObject> MapObjects { get; }
+        private Dictionary<Type, OSMLSModule> _allModules;
 
-        protected List<Type> types;
+        protected InheritanceTreeCollection<MapObject> MapObjects { get; private set; }
 
-        public OSMLSModule(OsmXml rawData, Dictionary<string, OSMLSModule> modules, InheritanceTreeCollection<MapObject> mapObjects)
+        private bool _isInitialized;
+
+        private readonly object _initializationLock = new object();
+
+        public void Initialize(OsmXml rawData, Dictionary<Type, OSMLSModule> modules, InheritanceTreeCollection<MapObject> mapObjects)
         {
-            types = Assembly.GetEntryAssembly().GetTypes().Where(x => x.IsClass).ToList();
-            anotherModules = modules;
+            lock (_initializationLock)
+            {
+                if (_isInitialized)
+                {
+                    throw new InvalidOperationException("Module already initialized.");
+                }
 
-            MapObjects = mapObjects;
+                RawData = rawData;
+                _allModules = modules;
+                MapObjects = mapObjects;
+
+                Initialize();
+
+                _isInitialized = true;
+            }
         }
+
+        protected abstract void Initialize();
 
         public abstract void Update(long elapsedMilliseconds);
 
-        public object Execute(string methodName, object[] patemeters = null)
+        public TModule GetModule<TModule>() where TModule : OSMLSModule
         {
-            try
-            {
-                return GetType().GetMethod(methodName).Invoke(this, patemeters);
-            }
-            catch (Exception)
-            {
-                Log(string.Format("Some error with {0} method call", methodName));
-                return null;
-            }
-
-        }
-
-        protected void Log(string msg)
-        {
-            types.Find(x => x.Name == "Constants").GetMethod("Log").Invoke(null, new object[] { msg, this });
-        }
-
-        public object GetProperty(string name)
-        {
-            return GetType().GetProperty(name).GetValue(this);
-        }
-
-        public dynamic GetAnotherModuleAsDynamic(string name)
-        {
-            return anotherModules[name];
+            return _allModules[typeof(TModule)] as TModule;
         }
     }
 }

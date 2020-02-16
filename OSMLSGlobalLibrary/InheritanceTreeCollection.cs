@@ -6,8 +6,8 @@ namespace OSMLSGlobalLibrary
     /// <summary>
     /// Inheritance tree collection
     /// </summary>
-    /// <typeparam name="BaseType"></typeparam>
-    public abstract class InheritanceTreeCollection<BaseType>
+    /// <typeparam name="TBase"></typeparam>
+    public abstract class InheritanceTreeCollection<TBase>
     {
         /// <summary>
         /// Gets items of a specific type.
@@ -21,7 +21,7 @@ namespace OSMLSGlobalLibrary
         /// </summary>
         /// <param name="type">Type for which to get items.</param>
         /// <returns>List of items of a specific type in the base type.</returns>
-        public abstract List<BaseType> Get(Type type);
+        public abstract List<TBase> Get(Type type);
 
         /// <summary>
         /// Gets items of a specific type and all inherited types.
@@ -35,18 +35,18 @@ namespace OSMLSGlobalLibrary
         /// </summary>
         /// <param name="type">Type for which to get items.</param>
         /// <returns>List of items of a specific type and all inherited types in the base type.</returns>
-        public abstract List<BaseType> GetAll(Type type);
+        public abstract List<TBase> GetAll(Type type);
 
         /// <summary>
         /// Adds the specified element to the collection.
         /// </summary>
         /// <param name="item">The element to add.</param>
-        public abstract void Add(BaseType item);
+        public abstract void Add(TBase item);
 
         /// <summary>
         /// Removes the specified element from the collection.
         /// </summary>
         /// <param name="item">The element to remove.</param>
-        public abstract void Remove(BaseType item);
+        public abstract void Remove(TBase item);
     }
 }

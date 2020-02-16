@@ -9,6 +9,6 @@ namespace OSMLSGlobalLibrary.Map
 
         public AttributesTable Attributes { get; } = new AttributesTable();
 
-        public Feature Feature { get { return new Feature(BaseGeometry, Attributes); } }
+        public Feature Feature => new Feature(BaseGeometry, Attributes);
     }
 }
