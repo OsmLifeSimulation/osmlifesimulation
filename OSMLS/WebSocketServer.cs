@@ -45,11 +45,11 @@ namespace OSMLS
 
         private MapObjectsCollection MapObjects { get; }
 
-        public WebSocketServer(int port, MapObjectsCollection mapObjects)
+        public WebSocketServer(string uri, MapObjectsCollection mapObjects)
         {
             MapObjects = mapObjects;
 
-            HttpListener.Prefixes.Add("http://localhost:" + port + '/');
+            HttpListener.Prefixes.Add(uri);
             HttpListener.Start();
 
             HttpListener.BeginGetContext(OnContext, null);

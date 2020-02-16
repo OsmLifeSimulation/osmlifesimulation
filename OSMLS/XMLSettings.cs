@@ -5,8 +5,8 @@ namespace OSMLS
     [XmlRoot(ElementName = "Presets")]
     public class PresetsXml
     {
-        public string OsmFilePath { get; set; } = "maps/Map.osm";
+        public string OsmFilePath { get; set; } = "maps/map.osm";
         public bool RunWebSocketServer { get; set; } = true;
-        public int WebSocketServerPort { get; set; } = 8080;
+        public string WebSocketServerUri { get; set; } = "http://localhost:61104/";
     }
 }

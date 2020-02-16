@@ -15,7 +15,7 @@ namespace OSMLS
         public ModulesLibrary(string osmFilePath, MapObjectsCollection mapObjects)
         {
             var assemblies = new List<Assembly>();
-            foreach (var file in Directory.EnumerateFiles(Constants.ModulesPath, "*.dll"))
+            foreach (var file in Directory.EnumerateFiles(Constants.ModulesDirectoryPath, "*.dll"))
             {
                 try
                 {
@@ -42,7 +42,7 @@ namespace OSMLS
                     }
                 );
 
-            Console.WriteLine("Starting modules initialization in order.");
+            Console.WriteLine(moduleTypesToOrder.Count == 0 ? "No modules found." : "Starting modules initialization in order.");
 
             foreach (var type in moduleTypesToOrder.Keys)
             {

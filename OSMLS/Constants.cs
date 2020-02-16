@@ -6,10 +6,10 @@ namespace OSMLS
 {
     public static class Constants
     {
-        private const string SettingsFolderPath = @"settings/";
-        public const string PresetsPath = SettingsFolderPath + "Presets";
+        public const string SettingsDirectoryPath = @"settings/";
+        public const string PresetsFilePath = SettingsDirectoryPath + "Presets";
 
-        public const string ModulesPath = @"Modules/";
+        public const string ModulesDirectoryPath = @"modules/";
 
         public static T DeserializeXmlOrCreateNew<T>(string path)
         {
