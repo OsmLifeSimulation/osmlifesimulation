@@ -1,9 +1,8 @@
-﻿using OSMLSGlobalLibrary;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace OSMLS
 {
-    class OSM
+    internal class OsmLifeSimulator
     {
         private Stopwatch TimeNow { get; } = new Stopwatch();
 
@@ -11,12 +10,11 @@ namespace OSMLS
 
         public MapObjectsCollection MapObjects { get; } = new MapObjectsCollection();
 
-        public OSM(string osmFilePath)
+        public OsmLifeSimulator(string osmFilePath)
         {
             TimeNow.Start();
 
-            var rawData = Constants.DeserializeXml<OsmXml>(osmFilePath);
-            ModulesLibrary = new ModulesLibrary(rawData, MapObjects);
+            ModulesLibrary = new ModulesLibrary(osmFilePath, MapObjects);
         }
 
         /// <summary>
@@ -30,7 +28,5 @@ namespace OSMLS
                 module.Value.Update(TimeNow.ElapsedMilliseconds);
             }
         }
-
     }
-
 }

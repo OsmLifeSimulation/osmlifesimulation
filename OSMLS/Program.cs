@@ -14,7 +14,7 @@ namespace OSMLS
 
             var presets = Constants.DeserializeXmlOrCreateNew<PresetsXml>(Constants.PresetsPath);
 
-            var osm = new OSM(presets.OsmFilePath);
+            var osm = new OsmLifeSimulator(presets.OsmFilePath);
             new Timer(e =>
             {
                 osm.Update();

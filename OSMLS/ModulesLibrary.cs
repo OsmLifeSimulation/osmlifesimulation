@@ -1,5 +1,4 @@
-﻿using OSMLSGlobalLibrary;
-using OSMLSGlobalLibrary.Modules;
+﻿using OSMLSGlobalLibrary.Modules;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +12,7 @@ namespace OSMLS
     {
         public Dictionary<Type, OSMLSModule> Modules { get; } = new Dictionary<Type, OSMLSModule>();
 
-        public ModulesLibrary(OsmXml rawData, MapObjectsCollection mapObjects)
+        public ModulesLibrary(string osmFilePath, MapObjectsCollection mapObjects)
         {
             var assemblies = new List<Assembly>();
             foreach (var file in Directory.EnumerateFiles(Constants.ModulesPath, "*.dll"))
@@ -53,7 +52,7 @@ namespace OSMLS
                 try
                 {
                     var moduleInstance = (OSMLSModule)Activator.CreateInstance(type);
-                    moduleInstance.Initialize(rawData, Modules, mapObjects);
+                    moduleInstance.Initialize(osmFilePath, Modules, mapObjects);
                     Modules[type] = moduleInstance;
                     Console.WriteLine($"{type.Name} initialized successfully.");
                 }

@@ -6,7 +6,7 @@ namespace OSMLSGlobalLibrary.Modules
 {
     public abstract class OSMLSModule
     {
-        protected OsmXml RawData { get; private set; }
+        protected string OsmFilePath { get; private set; }
 
         private Dictionary<Type, OSMLSModule> _allModules;
 
@@ -16,7 +16,7 @@ namespace OSMLSGlobalLibrary.Modules
 
         private readonly object _initializationLock = new object();
 
-        public void Initialize(OsmXml rawData, Dictionary<Type, OSMLSModule> modules, InheritanceTreeCollection<MapObject> mapObjects)
+        public void Initialize(string osmFilePath, Dictionary<Type, OSMLSModule> modules, InheritanceTreeCollection<MapObject> mapObjects)
         {
             lock (_initializationLock)
             {
@@ -25,7 +25,7 @@ namespace OSMLSGlobalLibrary.Modules
                     throw new InvalidOperationException("Module already initialized.");
                 }
 
-                RawData = rawData;
+                OsmFilePath = osmFilePath;
                 _allModules = modules;
                 MapObjects = mapObjects;
 
