@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace OSMLS
 {
-    public class MapObjectsCollection : InheritanceTreeCollection<MapObject>
+    public class MapObjectsCollection : IInheritanceTreeCollection<MapObject>
     {
         private readonly Type _itemsType;
         private readonly HashSet<MapObject> _items = new HashSet<MapObject>();
@@ -55,29 +55,29 @@ namespace OSMLS
                 _inheritors[GetFirstInheritor(type, _itemsType)].GetInternal(type);
         }
 
-        public override List<T> Get<T>()
+        public List<T> Get<T>()
         {
             return Get(typeof(T)).Cast<T>().ToList();
         }
 
-        public override List<MapObject> Get(Type type)
+        public List<MapObject> Get(Type type)
         {
             return GetInternal(type).ToList();
         }
 
-        public override List<T> GetAll<T>()
+        public List<T> GetAll<T>()
         {
             return GetAll(typeof(T)).Cast<T>().ToList();
         }
 
-        public override List<MapObject> GetAll(Type type)
+        public List<MapObject> GetAll(Type type)
         {
             return type == _itemsType ?
                 _items.Concat(_inheritors.SelectMany(x => x.Value.GetAll(x.Key))).ToList() :
                 _inheritors[GetFirstInheritor(type, _itemsType)].GetAll(type);
         }
 
-        public override void Add(MapObject item)
+        public void Add(MapObject item)
         {
             var itemType = item.GetType();
 
@@ -97,7 +97,7 @@ namespace OSMLS
             }
         }
 
-        public override void Remove(MapObject item)
+        public void Remove(MapObject item)
         {
             GetInternal(item.GetType()).Remove(item);
         }

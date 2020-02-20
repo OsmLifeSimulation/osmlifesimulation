@@ -10,13 +10,13 @@ namespace OSMLSGlobalLibrary.Modules
 
         private Dictionary<Type, OSMLSModule> _allModules;
 
-        protected InheritanceTreeCollection<MapObject> MapObjects { get; private set; }
+        protected IInheritanceTreeCollection<MapObject> MapObjects { get; private set; }
 
         private bool _isInitialized;
 
         private readonly object _initializationLock = new object();
 
-        public void Initialize(string osmFilePath, Dictionary<Type, OSMLSModule> modules, InheritanceTreeCollection<MapObject> mapObjects)
+        public void Initialize(string osmFilePath, Dictionary<Type, OSMLSModule> modules, IInheritanceTreeCollection<MapObject> mapObjects)
         {
             lock (_initializationLock)
             {
