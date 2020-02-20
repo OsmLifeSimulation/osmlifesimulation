@@ -39,7 +39,7 @@ namespace OSMLSGlobalLibrary.Modules
 
         public abstract void Update(long elapsedMilliseconds);
 
-        public TModule GetModule<TModule>() where TModule : OSMLSModule
+        protected TModule GetModule<TModule>() where TModule : OSMLSModule
         {
             return _allModules[typeof(TModule)] as TModule;
         }
