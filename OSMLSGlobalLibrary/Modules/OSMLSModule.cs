@@ -1,6 +1,6 @@
 ﻿using System;
-using OSMLSGlobalLibrary.Map;
 using System.Collections.Generic;
+using NetTopologySuite.Geometries;
 
 namespace OSMLSGlobalLibrary.Modules
 {
@@ -10,13 +10,13 @@ namespace OSMLSGlobalLibrary.Modules
 
         private Dictionary<Type, OSMLSModule> _allModules;
 
-        protected InheritanceTreeCollection<MapObject> MapObjects { get; private set; }
+        protected IInheritanceTreeCollection<Geometry> MapObjects { get; private set; }
 
         private bool _isInitialized;
 
         private readonly object _initializationLock = new object();
 
-        public void Initialize(string osmFilePath, Dictionary<Type, OSMLSModule> modules, InheritanceTreeCollection<MapObject> mapObjects)
+        public void Initialize(string osmFilePath, Dictionary<Type, OSMLSModule> modules, IInheritanceTreeCollection<Geometry> mapObjects)
         {
             lock (_initializationLock)
             {
@@ -39,7 +39,7 @@ namespace OSMLSGlobalLibrary.Modules
 
         public abstract void Update(long elapsedMilliseconds);
 
-        public TModule GetModule<TModule>() where TModule : OSMLSModule
+        protected TModule GetModule<TModule>() where TModule : OSMLSModule
         {
             return _allModules[typeof(TModule)] as TModule;
         }

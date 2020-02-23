@@ -3,18 +3,19 @@ using OSMLSGlobalLibrary.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NetTopologySuite.Geometries;
 
 namespace OSMLS
 {
-    public class MapObjectsCollection : InheritanceTreeCollection<MapObject>
+    public class MapObjectsCollection : IInheritanceTreeCollection<Geometry>
     {
         private readonly Type _itemsType;
-        private readonly HashSet<MapObject> _items = new HashSet<MapObject>();
+        private readonly HashSet<Geometry> _items = new HashSet<Geometry>();
         private readonly Dictionary<Type, MapObjectsCollection> _inheritors = new Dictionary<Type, MapObjectsCollection>();
 
         public MapObjectsCollection()
         {
-            _itemsType = typeof(MapObject);
+            _itemsType = typeof(Geometry);
         }
 
         private MapObjectsCollection(Type type)
@@ -31,15 +32,15 @@ namespace OSMLS
             return resultType;
         }
 
-        public List<(Type type, HashSet<MapObject> mapObjects)> GetTypeItems()
+        public List<(Type type, HashSet<Geometry> mapObjects)> GetTypeItems()
         {
-            List<(Type type, HashSet<MapObject>)> typeItems = new List<(Type type, HashSet<MapObject>)>();
+            List<(Type type, HashSet<Geometry>)> typeItems = new List<(Type type, HashSet<Geometry>)>();
             GetTypeItems(typeItems);
 
             return typeItems;
         }
 
-        private void GetTypeItems(List<(Type, HashSet<MapObject>)> typeItems)
+        private void GetTypeItems(List<(Type, HashSet<Geometry>)> typeItems)
         {
             typeItems.Add((_itemsType, GetInternal(_itemsType)));
 
@@ -49,35 +50,35 @@ namespace OSMLS
             }
         }
 
-        private HashSet<MapObject> GetInternal(Type type)
+        private HashSet<Geometry> GetInternal(Type type)
         {
             return type == _itemsType ? _items : 
                 _inheritors[GetFirstInheritor(type, _itemsType)].GetInternal(type);
         }
 
-        public override List<T> Get<T>()
+        public List<T> Get<T>()
         {
             return Get(typeof(T)).Cast<T>().ToList();
         }
 
-        public override List<MapObject> Get(Type type)
+        public List<Geometry> Get(Type type)
         {
             return GetInternal(type).ToList();
         }
 
-        public override List<T> GetAll<T>()
+        public List<T> GetAll<T>()
         {
             return GetAll(typeof(T)).Cast<T>().ToList();
         }
 
-        public override List<MapObject> GetAll(Type type)
+        public List<Geometry> GetAll(Type type)
         {
             return type == _itemsType ?
                 _items.Concat(_inheritors.SelectMany(x => x.Value.GetAll(x.Key))).ToList() :
                 _inheritors[GetFirstInheritor(type, _itemsType)].GetAll(type);
         }
 
-        public override void Add(MapObject item)
+        public void Add(Geometry item)
         {
             var itemType = item.GetType();
 
@@ -97,7 +98,7 @@ namespace OSMLS
             }
         }
 
-        public override void Remove(MapObject item)
+        public void Remove(Geometry item)
         {
             GetInternal(item.GetType()).Remove(item);
         }
