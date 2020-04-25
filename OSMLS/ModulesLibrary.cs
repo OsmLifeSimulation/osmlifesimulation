@@ -44,7 +44,7 @@ namespace OSMLS
 
             Console.WriteLine(moduleTypesToOrder.Count == 0 ? "No modules found." : "Starting modules initialization in order.");
 
-            foreach (var type in moduleTypesToOrder.Keys)
+            foreach (var type in moduleTypesToOrder.OrderBy(x => x.Value).Select(x => x.Key))
             {
                 // Writes initialization order.
                 Console.Write($"{moduleTypesToOrder[type]}: ");
