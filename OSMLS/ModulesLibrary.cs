@@ -47,14 +47,13 @@ namespace OSMLS
             foreach (var type in moduleTypesToOrder.OrderBy(x => x.Value).Select(x => x.Key))
             {
                 // Writes initialization order.
-                Console.Write($"{moduleTypesToOrder[type]}: ");
+                Console.WriteLine($"{moduleTypesToOrder[type]}: {type.Name} initialization started.");
 
                 try
                 {
                     var moduleInstance = (OSMLSModule)Activator.CreateInstance(type);
                     moduleInstance.Initialize(osmFilePath, Modules, mapObjects);
                     Modules[type] = moduleInstance;
-                    Console.WriteLine($"{type.Name} initialized successfully.");
                 }
                 catch (Exception exception)
                 {
