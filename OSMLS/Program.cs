@@ -19,7 +19,8 @@ namespace OSMLS
             var presets = Constants.DeserializeXmlOrCreateNew<PresetsXml>(Constants.PresetsFilePath);
 
             var osm = new OsmLifeSimulator(presets.OsmFilePath);
-            new Timer(e =>
+            Console.WriteLine("Application successfully started.");
+            new Timer(callback =>
             {
                 osm.Update();
             }, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(50));
@@ -36,12 +37,7 @@ namespace OSMLS
                 }, null, startTimeSpan, periodTimeSpan);
             }
 
-            Console.WriteLine("Application successfully started.");
-
-            while (true)
-            {
-                Thread.Sleep(10000);
-            }
+            Thread.Sleep(Timeout.Infinite);
         }
 
         private static void SigTermEventHandler(AssemblyLoadContext obj)

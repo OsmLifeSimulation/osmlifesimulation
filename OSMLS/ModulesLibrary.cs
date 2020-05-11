@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+using NetTopologySuite.Geometries;
+using OSMLSGlobalLibrary;
 
 namespace OSMLS
 {
@@ -12,7 +14,7 @@ namespace OSMLS
     {
         public Dictionary<Type, OSMLSModule> Modules { get; } = new Dictionary<Type, OSMLSModule>();
 
-        public ModulesLibrary(string osmFilePath, MapObjectsCollection mapObjects)
+        public ModulesLibrary(string osmFilePath, IInheritanceTreeCollection<Geometry> mapObjects)
         {
             var assemblies = new List<Assembly>();
             foreach (var file in Directory.EnumerateFiles(Constants.ModulesDirectoryPath, "*.dll"))
@@ -36,7 +38,7 @@ namespace OSMLS
                             .GetCustomAttributes(typeof(CustomInitializationOrderAttribute), false)
                             .FirstOrDefault();
 
-                        var initializationOrder = initializationOrderAttribute?.InitializationOrder ?? 0;
+                        var initializationOrder = (initializationOrderAttribute ?? new CustomInitializationOrderAttribute()).InitializationOrder;
 
                         return initializationOrder;
                     }

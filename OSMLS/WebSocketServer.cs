@@ -37,7 +37,21 @@ namespace OSMLS
             }
         }
 
-        private GeoJsonWriter GeoJsonWriter { get; } = new GeoJsonWriter();
+		internal struct Package
+		{
+			public string TypeFullName { get; set; }
+			public string FeaturesGeoJson { get; set; }
+			public string OpenLayersStyle { get; set; }
+
+			public Package(string typeFullName, string featuresGeoJson, string openLayersStyle)
+			{
+				TypeFullName = typeFullName;
+				FeaturesGeoJson = featuresGeoJson;
+				OpenLayersStyle = openLayersStyle;
+			}
+		}
+
+		private GeoJsonWriter GeoJsonWriter { get; } = new GeoJsonWriter();
 
         private List<Client> Clients { get; } = new List<Client>();
 
@@ -83,12 +97,12 @@ namespace OSMLS
             var featuresCollection =
                 MapObjects
                 .GetTypeItems()
-                .Select(ti =>
-                    (ti.type.ToString(),
+                .Select(ti => new Package
+                    (ti.type.FullName,
                     "{\"type\":\"FeatureCollection\", \"features\":" + GeoJsonWriter.Write(new FeatureCollection().Concat(ti.mapObjects.Select(mo => new Feature(mo, new AttributesTable())).ToList())) + "}",
-                    (((CustomStyleAttribute)ti.type.GetCustomAttributes(typeof(CustomStyleAttribute), false).FirstOrDefault()) ?? new CustomStyleAttribute()).Style)
+                    ((CustomStyleAttribute)ti.type.GetCustomAttributes(typeof(CustomStyleAttribute), false).FirstOrDefault() ?? new CustomStyleAttribute()).Style)
                 )
-                .Where(x => x.ToTuple().Item3 != null);
+                .Where(x => x.OpenLayersStyle != null);
 
             var jsonData = JsonConvert.SerializeObject(featuresCollection);
 

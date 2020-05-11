@@ -23,8 +23,8 @@
 function SetCharacters(allNewData) {
 	allNewData.forEach(currentNewData => {
 
-		var layerType = currentNewData.Item1;
-		var geojsonObject = currentNewData.Item2;
+		var layerType = currentNewData.TypeFullName;
+		var geojsonObject = currentNewData.FeaturesGeoJson;
 
 		var sameLayer = map.getLayers().getArray().find((element) => element.get('layerType') == layerType)
 
@@ -37,7 +37,7 @@ function SetCharacters(allNewData) {
 		}
 		else {
 			var vectorLayer = new ol.layer.Vector({
-				style: eval(currentNewData.Item3)
+				style: eval(currentNewData.OpenLayersStyle)
 			});
 			vectorLayer.set('layerType', layerType);
 			vectorLayer.setSource(vectorSource);
