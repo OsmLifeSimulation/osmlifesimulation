@@ -6,7 +6,7 @@ websocket.onopen = function (evt) {
 }
 
 websocket.onclose = function (evt) {
-	console.log("DISCONNECTED");
+	alert("Unable to establish a connection to the server.");
 }
 
 websocket.onmessage = function (evt) {
