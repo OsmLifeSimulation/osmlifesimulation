@@ -13,6 +13,8 @@ namespace OSMLS
         private readonly HashSet<Geometry> _items = new HashSet<Geometry>();
         private readonly Dictionary<Type, MapObjectsCollection> _inheritors = new Dictionary<Type, MapObjectsCollection>();
 
+		private readonly object _synchronizationLock = new object();
+
         public MapObjectsCollection()
         {
             _itemsType = typeof(Geometry);
@@ -32,12 +34,15 @@ namespace OSMLS
             return resultType;
         }
 
-        public List<(Type type, HashSet<Geometry> mapObjects)> GetTypeItems()
+        public List<(Type type, List<Geometry> mapObjects)> GetTypeItems()
         {
-            List<(Type type, HashSet<Geometry>)> typeItems = new List<(Type type, HashSet<Geometry>)>();
-            GetTypeItems(typeItems);
+	        lock (_synchronizationLock)
+	        {
+				var typeItems = new List<(Type type, HashSet<Geometry>)>();
+				GetTypeItems(typeItems);
 
-            return typeItems;
+				return typeItems.Select(x => (x.Item1, x.Item2.ToList())).ToList();
+			}
         }
 
         private void GetTypeItems(List<(Type, HashSet<Geometry>)> typeItems)
@@ -52,8 +57,15 @@ namespace OSMLS
 
         private HashSet<Geometry> GetInternal(Type type)
         {
-            return type == _itemsType ? _items : 
-                _inheritors[GetFirstInheritor(type, _itemsType)].GetInternal(type);
+	        if (type == _itemsType)
+	        {
+		        return _items;
+	        }
+
+	        var firstInheritor = GetFirstInheritor(type, _itemsType);
+	        return _inheritors.ContainsKey(firstInheritor)
+		        ? _inheritors[firstInheritor].GetInternal(type)
+		        : new HashSet<Geometry>();
         }
 
         public List<T> Get<T>()
@@ -63,44 +75,62 @@ namespace OSMLS
 
         public List<Geometry> Get(Type type)
         {
-            return GetInternal(type).ToList();
+	        lock (_synchronizationLock)
+	        {
+				return GetInternal(type).ToList();
+			}
         }
 
         public List<T> GetAll<T>()
         {
-            return GetAll(typeof(T)).Cast<T>().ToList();
+	        return GetAll(typeof(T)).Cast<T>().ToList();
         }
 
         public List<Geometry> GetAll(Type type)
         {
-            return type == _itemsType ?
-                _items.Concat(_inheritors.SelectMany(x => x.Value.GetAll(x.Key))).ToList() :
-                _inheritors[GetFirstInheritor(type, _itemsType)].GetAll(type);
+	        lock (_synchronizationLock)
+	        {
+		        if (type == _itemsType)
+		        {
+			        return _items.Concat(_inheritors.SelectMany(x => x.Value.GetAll(x.Key))).ToList();
+		        }
+
+		        var firstInheritor = GetFirstInheritor(type, _itemsType);
+		        return _inheritors.ContainsKey(firstInheritor)
+			        ? _inheritors[firstInheritor].GetAll(type)
+			        : new List<Geometry>();
+			}
         }
 
         public void Add(Geometry item)
         {
-            var itemType = item.GetType();
+	        var itemType = item.GetType();
 
-            if (itemType == _itemsType)
-            {
-                _items.Add(item);
-            }
-            else
-            {
-                var inheritorType = GetFirstInheritor(itemType, _itemsType);
-                if (!_inheritors.ContainsKey(inheritorType))
-                {
-                    _inheritors[inheritorType] = new MapObjectsCollection(inheritorType);
-                }
+	        lock (_synchronizationLock)
+	        {
+		        if (itemType == _itemsType)
+		        {
+			        _items.Add(item);
+		        }
+		        else
+		        {
+			        var inheritorType = GetFirstInheritor(itemType, _itemsType);
+			        if (!_inheritors.ContainsKey(inheritorType))
+			        {
+				        _inheritors[inheritorType] = new MapObjectsCollection(inheritorType);
+			        }
 
-                _inheritors[inheritorType].Add(item);
-            }
+			        _inheritors[inheritorType].Add(item);
+		        }
+			}
         }
 
         public void Remove(Geometry item)
         {
-            GetInternal(item.GetType()).Remove(item);
+	        lock (_synchronizationLock)
+	        {
+		        GetInternal(item.GetType()).Remove(item);
+	        }
         }
     }
 }
