@@ -2,7 +2,7 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace OSMLS
+namespace OSMLS.Core
 {
     public static class Constants
     {

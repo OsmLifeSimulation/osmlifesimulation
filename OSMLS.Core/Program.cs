@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.Loader;
 using System.Threading;
 
-namespace OSMLS
+namespace OSMLS.Core
 {
     internal class Program
     {

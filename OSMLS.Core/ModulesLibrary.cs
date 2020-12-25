@@ -8,7 +8,7 @@ using System.Runtime.Loader;
 using NetTopologySuite.Geometries;
 using OSMLSGlobalLibrary;
 
-namespace OSMLS
+namespace OSMLS.Core
 {
     internal class ModulesLibrary
     {

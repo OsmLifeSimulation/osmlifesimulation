@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OSMLS", "OSMLS\OSMLS.csproj", "{9DCC5075-B941-495C-B380-B56327BCC96E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OSMLS.Core", "OSMLS.Core\OSMLS.Core.csproj", "{9DCC5075-B941-495C-B380-B56327BCC96E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OSMLSGlobalLibrary", "OSMLSGlobalLibrary\OSMLSGlobalLibrary.csproj", "{9BCA7096-3BA6-4211-9FBF-F8C45BA60171}"
 EndProject

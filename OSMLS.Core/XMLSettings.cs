@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace OSMLS
+namespace OSMLS.Core
 {
     [XmlRoot(ElementName = "Presets")]
     public class PresetsXml

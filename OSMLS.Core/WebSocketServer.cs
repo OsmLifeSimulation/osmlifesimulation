@@ -10,7 +10,7 @@ using NetTopologySuite.IO;
 using Newtonsoft.Json;
 using OSMLSGlobalLibrary.Map;
 
-namespace OSMLS
+namespace OSMLS.Core
 {
     internal class WebSocketServer
     {

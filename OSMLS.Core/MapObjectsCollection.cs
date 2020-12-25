@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NetTopologySuite.Geometries;
 
-namespace OSMLS
+namespace OSMLS.Core
 {
     public class MapObjectsCollection : IInheritanceTreeCollection<Geometry>
     {
