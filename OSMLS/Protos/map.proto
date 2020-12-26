@@ -1,0 +1,17 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "OSMLS.Map";
+
+package map;
+
+import "google/protobuf/empty.proto";
+
+service MapService {
+  rpc Updates (google.protobuf.Empty) returns (stream Package);
+}
+
+message Package {
+  string typeFullName = 1;
+  string featuresGeoJson = 2;
+  string openLayersStyle = 3;
+}

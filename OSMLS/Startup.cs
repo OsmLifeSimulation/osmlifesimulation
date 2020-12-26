@@ -11,6 +11,7 @@ namespace OSMLS
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddGrpc();
 			services.AddControllers();
 
 			services.AddSwaggerGen();
@@ -34,7 +35,11 @@ namespace OSMLS
 
 			app.UseRouting();
 
-			app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapGrpcService<Services.MapService>();
+				endpoints.MapControllers();
+			});
 		}
 	}
 }
