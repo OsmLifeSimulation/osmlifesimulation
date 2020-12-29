@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OSMLS.Services;
 
 namespace OSMLS
 {
@@ -35,9 +36,11 @@ namespace OSMLS
 
 			app.UseRouting();
 
+			app.UseGrpcWeb();
+
 			app.UseEndpoints(endpoints =>
 			{
-				endpoints.MapGrpcService<Services.MapService>();
+				endpoints.MapGrpcService<MapService>().EnableGrpcWeb();
 				endpoints.MapControllers();
 			});
 		}
