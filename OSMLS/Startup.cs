@@ -11,6 +11,8 @@ namespace OSMLS
 {
 	public class Startup
 	{
+		private const string AllowAllCorsPolicyName = "AllowAll";
+
 		// This method gets called by the runtime. Use this method to add services to the container.
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
@@ -36,6 +38,14 @@ namespace OSMLS
 			services.AddControllers();
 
 			services.AddSwaggerGen();
+
+			services.AddCors(options => options.AddPolicy(AllowAllCorsPolicyName, builder =>
+			{
+				builder.AllowAnyOrigin()
+					.AllowAnyMethod()
+					.AllowAnyHeader()
+					.WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
+			}));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,9 +68,11 @@ namespace OSMLS
 
 			app.UseGrpcWeb();
 
+			app.UseCors();
+
 			app.UseEndpoints(endpoints =>
 			{
-				endpoints.MapGrpcService<MapService>().EnableGrpcWeb();
+				endpoints.MapGrpcService<MapService>().EnableGrpcWeb().RequireCors(AllowAllCorsPolicyName);
 				endpoints.MapControllers();
 			});
 		}
