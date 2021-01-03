@@ -12,23 +12,23 @@ namespace OSMLSGlobalLibrary.Map
 		/// Geometry style by default.
 		/// </summary>
 		private const string DefaultStyle =
-			@"new ol.style.Style({
-                image: new ol.style.Circle({
+			@"new style.Style({
+                image: new style.Circle({
                     opacity: 1.0,
                     scale: 1.0,
                     radius: 3,
-                    fill: new ol.style.Fill({
+                    fill: new style.Fill({
                       color: 'rgba(255, 255, 255, 0.4)'
                     }),
-                    stroke: new ol.style.Stroke({
+                    stroke: new style.Stroke({
                       color: 'rgba(0, 0, 0, 0.4)',
                       width: 1
                     }),
                 }),
-                fill: new ol.style.Fill({
+                fill: new style.Fill({
                     color: 'rgba(255, 255, 255, 0.4)'
                 }),
-                stroke: new ol.style.Stroke({
+                stroke: new style.Stroke({
                     color: 'rgba(0, 0, 0, 0.4)',
                     width: 1
                 })

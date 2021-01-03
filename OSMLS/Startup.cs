@@ -1,7 +1,10 @@
+using System;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OSMLS.Model;
 using OSMLS.Services;
 
 namespace OSMLS
@@ -12,6 +15,23 @@ namespace OSMLS
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddSingleton<MapObjectsCollection>();
+
+			var settingsDirectoryPath = $"{AppContext.BaseDirectory}/settings/";
+			var modulesDirectoryPath = $"{AppContext.BaseDirectory}/modules/";
+			var osmFilePath = $"{AppContext.BaseDirectory}/map.osm";
+
+			Directory.CreateDirectory(settingsDirectoryPath);
+			Directory.CreateDirectory(modulesDirectoryPath);
+
+			services.AddSingleton(provider => new ModulesLibrary(
+				modulesDirectoryPath,
+				osmFilePath,
+				provider.GetService<MapObjectsCollection>()
+			));
+			services.AddSingleton<ModelService>();
+			services.AddHostedService(provider => provider.GetService<ModelService>());
+
 			services.AddGrpc();
 			services.AddControllers();
 

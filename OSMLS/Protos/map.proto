@@ -7,11 +7,15 @@ package map;
 import "google/protobuf/empty.proto";
 
 service MapService {
-  rpc Updates (google.protobuf.Empty) returns (stream Package);
+  rpc Updates (google.protobuf.Empty) returns (stream MapFeaturesCluster);
 }
 
-message Package {
-  string typeFullName = 1;
-  string featuresGeoJson = 2;
-  string openLayersStyle = 3;
+message MapFeaturesCluster {
+  repeated MapFeature features = 1;
+}
+
+message MapFeature {
+  string type_full_name = 1;
+  string features_geo_json = 2;
+  string open_layers_style = 3;
 }
