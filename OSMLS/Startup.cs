@@ -1,11 +1,14 @@
 using System;
 using System.IO;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NetTopologySuite.Geometries;
 using OSMLS.Model;
 using OSMLS.Services;
+using OSMLSGlobalLibrary;
 
 namespace OSMLS
 {
@@ -18,24 +21,23 @@ namespace OSMLS
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddSingleton<MapObjectsCollection>();
+			services.AddSingleton<IInheritanceTreeCollection<Geometry>>(provider =>
+				provider.GetService<MapObjectsCollection>()
+			);
 
 			var settingsDirectoryPath = $"{AppContext.BaseDirectory}/settings/";
-			var modulesDirectoryPath = $"{AppContext.BaseDirectory}/modules/";
-			var osmFilePath = $"{AppContext.BaseDirectory}/map.osm";
 
 			Directory.CreateDirectory(settingsDirectoryPath);
-			Directory.CreateDirectory(modulesDirectoryPath);
 
-			services.AddSingleton(provider => new ModulesLibrary(
-				modulesDirectoryPath,
-				osmFilePath,
-				provider.GetService<MapObjectsCollection>()
-			));
+			services.AddSingleton<ModulesLibrary>();
 			services.AddSingleton<ModelService>();
 			services.AddHostedService(provider => provider.GetService<ModelService>());
 
 			services.AddGrpc();
-			services.AddControllers();
+			services.AddControllers().AddJsonOptions(options =>
+			{
+				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+			});
 
 			services.AddSwaggerGen();
 
@@ -68,11 +70,11 @@ namespace OSMLS
 
 			app.UseGrpcWeb();
 
-			app.UseCors();
+			app.UseCors(AllowAllCorsPolicyName);
 
 			app.UseEndpoints(endpoints =>
 			{
-				endpoints.MapGrpcService<MapService>().EnableGrpcWeb().RequireCors(AllowAllCorsPolicyName);
+				endpoints.MapGrpcService<MapService>().EnableGrpcWeb();
 				endpoints.MapControllers();
 			});
 		}

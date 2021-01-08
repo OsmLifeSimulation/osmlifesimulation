@@ -2,70 +2,27 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Loader;
-using NetTopologySuite.Geometries;
-using OSMLSGlobalLibrary;
 using OSMLSGlobalLibrary.Modules;
 
 namespace OSMLS.Model
 {
-	internal class ModulesLibrary
+	public class ModulesLibrary
 	{
-		public Dictionary<Type, OSMLSModule> Modules { get; } = new ();
+		public List<Type> ModulesTypes { get; } = new();
 
-		public ModulesLibrary(string modulesDirectoryPath, string osmFilePath, IInheritanceTreeCollection<Geometry> mapObjects)
+		public static Type GetType(string name) => AssemblyLoadContext.Default.Assemblies
+			.Select(assembly => assembly.GetType(name)).First(type => type != null);
+
+		public void LoadModules(Stream assemblyStream)
 		{
-			var assemblies = new List<Assembly>();
-			foreach (var file in Directory.EnumerateFiles(modulesDirectoryPath, "*.dll"))
-			{
-				try
-				{
-					assemblies.Add(AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.GetFullPath(file)));
-				}
-				catch (Exception exception)
-				{
-					Console.WriteLine($"DLL {file} can't be loaded. Exception:\n{exception}");
-				}
-			}
+			var assembly = AssemblyLoadContext.Default.LoadFromStream(assemblyStream);
 
-			var moduleTypesToOrder = assemblies
-				.SelectMany(a => a.GetExportedTypes())
+			ModulesTypes.AddRange(
+				assembly
+				.GetExportedTypes()
 				.Where(type => type.IsSubclassOf(typeof(OSMLSModule)))
-				.ToDictionary(type => type, type =>
-					{
-						var initializationOrderAttribute = (CustomInitializationOrderAttribute) type
-							.GetCustomAttributes(typeof(CustomInitializationOrderAttribute), false)
-							.FirstOrDefault();
-
-						var initializationOrder =
-							(initializationOrderAttribute ?? new CustomInitializationOrderAttribute())
-							.InitializationOrder;
-
-						return initializationOrder;
-					}
-				);
-
-			Console.WriteLine(moduleTypesToOrder.Count == 0
-				? "No modules found."
-				: "Starting modules initialization in order.");
-
-			foreach (var type in moduleTypesToOrder.OrderBy(x => x.Value).Select(x => x.Key))
-			{
-				// Writes initialization order.
-				Console.WriteLine($"{moduleTypesToOrder[type]}: {type.Name} initialization started.");
-
-				try
-				{
-					var moduleInstance = (OSMLSModule) Activator.CreateInstance(type);
-					moduleInstance!.Initialize(osmFilePath, Modules, mapObjects);
-					Modules[type] = moduleInstance;
-				}
-				catch (Exception exception)
-				{
-					Console.WriteLine($"Module {type.Name} can't be loaded. Exception:\n{exception}");
-				}
-			}
+			);
 		}
 	}
 }

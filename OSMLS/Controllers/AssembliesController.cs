@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OSMLS.Model;
 
 namespace OSMLS.Controllers
 {
@@ -9,16 +8,15 @@ namespace OSMLS.Controllers
 	[Route("[controller]")]
 	public class AssembliesController : ControllerBase
 	{
-		[HttpGet]
-		public IEnumerable<string> GetAssemblies()
+		public AssembliesController(ModulesLibrary modulesLibrary)
 		{
-			throw new NotImplementedException();
+			_ModulesLibrary = modulesLibrary;
 		}
+		
+		private readonly ModulesLibrary _ModulesLibrary;
 
 		[HttpPost]
-		public void PostAssembly(IFormFile assembly)
-		{
-			throw new NotImplementedException();
-		}
+		public void PostAssembly(IFormFile assembly) => 
+			_ModulesLibrary.LoadModules(assembly.OpenReadStream());
 	}
 }
