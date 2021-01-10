@@ -20,18 +20,18 @@ namespace OSMLS
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddSingleton<MapObjectsCollection>();
+			services.AddSingleton<IMapObjectsCollection, MapObjectsCollection>();
 			services.AddSingleton<IInheritanceTreeCollection<Geometry>>(provider =>
-				provider.GetService<MapObjectsCollection>()
+				provider.GetService<IMapObjectsCollection>()
 			);
 
 			var settingsDirectoryPath = $"{AppContext.BaseDirectory}/settings/";
 
 			Directory.CreateDirectory(settingsDirectoryPath);
 
-			services.AddSingleton<ModulesLibrary>();
-			services.AddSingleton<ModelService>();
-			services.AddHostedService(provider => provider.GetService<ModelService>());
+			services.AddSingleton<IModulesLibrary, ModulesLibrary>();
+			services.AddSingleton<IModelService, ModelService>();
+			services.AddHostedService(provider => provider.GetService<IModelService>());
 
 			services.AddGrpc();
 			services.AddControllers().AddJsonOptions(options =>

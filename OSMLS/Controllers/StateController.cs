@@ -17,12 +17,12 @@ namespace OSMLS.Controllers
 			Stopped
 		}
 
-		public StateController(ModelService modelService)
+		public StateController(IModelService modelService)
 		{
 			_ModelService = modelService;
 		}
 
-		private readonly ModelService _ModelService;
+		private readonly IModelService _ModelService;
 
 		[HttpGet]
 		public State GetState() =>
@@ -31,7 +31,7 @@ namespace OSMLS.Controllers
 			State.Active;
 
 		[HttpPut]
-		public async Task PutState(State state, CancellationToken cancellationToken)
+		public async Task PutState(State state, CancellationToken cancellationToken = default)
 		{
 			switch (state)
 			{

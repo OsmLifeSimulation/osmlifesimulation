@@ -15,7 +15,7 @@ namespace OSMLS.Services
 {
 	internal class MapService : MapServiceBase
 	{
-		public MapService(MapObjectsCollection mapObjectsCollection)
+		public MapService(IMapObjectsCollection mapObjectsCollection)
 		{
 			var geoJsonWriter = new GeoJsonWriter();
 

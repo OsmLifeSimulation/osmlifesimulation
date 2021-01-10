@@ -10,14 +10,14 @@ namespace OSMLS.Controllers
 	[Route("[controller]")]
 	public class ModulesController
 	{
-		public ModulesController(ModulesLibrary modulesLibrary, ModelService modelService)
+		public ModulesController(IModulesLibrary modulesLibrary, IModelService modelService)
 		{
 			_ModulesLibrary = modulesLibrary;
 			_ModelService = modelService;
 		}
 
-		private readonly ModulesLibrary _ModulesLibrary;
-		private readonly ModelService _ModelService;
+		private readonly IModulesLibrary _ModulesLibrary;
+		private readonly IModelService _ModelService;
 
 		[HttpGet]
 		public IEnumerable<string> GetModules() => _ModulesLibrary.ModulesTypes.Select(type => type.FullName);
@@ -25,15 +25,15 @@ namespace OSMLS.Controllers
 		[HttpPost("Model")]
 		public void PostModelModule(string typeName)
 		{
-			_ModelService.Modules.Add(ModulesLibrary.GetType(typeName));
+			_ModelService.ModulesTypes.Add(_ModulesLibrary.GetType(typeName));
 		}
 
 		[HttpGet("Model")]
 		public IEnumerable<string> GetModelModules() =>
-			_ModelService.Modules.Select(type => type.FullName);
+			_ModelService.ModulesTypes.Select(type => type.FullName);
 
 		[HttpDelete("Model")]
 		public void DeleteModelModule(string typeName) =>
-			_ModelService.Modules.Remove(ModulesLibrary.GetType(typeName));
+			_ModelService.ModulesTypes.Remove(_ModulesLibrary.GetType(typeName));
 	}
 }

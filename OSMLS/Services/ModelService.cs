@@ -4,27 +4,27 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
 using NetTopologySuite.Geometries;
 using OSMLSGlobalLibrary;
 using OSMLSGlobalLibrary.Modules;
 
 namespace OSMLS.Services
 {
-	public class ModelService : IHostedService, IDisposable
+	public class ModelService : IModelService
 	{
 		public ModelService(IInheritanceTreeCollection<Geometry> mapObjects)
 		{
 			_MapObjects = mapObjects;
 		}
 
-		public List<Type> Modules { get; } = new();
+		public IList<Type> ModulesTypes { get; } = new List<Type>();
 
-		private Dictionary<Type, OSMLSModule> InternalModules { get; set; }
+		private Dictionary<Type, OSMLSModule> TypesToModules { get; set; }
 
 		private readonly string _OsmFilePath = $"{AppContext.BaseDirectory}/map.osm";
 
 		public bool IsPaused { get; set; }
+
 		public bool IsStopped { get; private set; }
 
 		private Timer _Timer;
@@ -35,12 +35,12 @@ namespace OSMLS.Services
 
 		private void InitializeModules()
 		{
-			InternalModules = Modules.ToDictionary(
+			TypesToModules = ModulesTypes.ToDictionary(
 				moduleType => moduleType,
 				moduleType => (OSMLSModule) Activator.CreateInstance(moduleType)
 			);
 
-			var moduleTypesToOrder = InternalModules.Keys.ToDictionary(type => type, type =>
+			var moduleTypesToOrder = TypesToModules.Keys.ToDictionary(type => type, type =>
 				{
 					var initializationOrderAttribute = (CustomInitializationOrderAttribute) type
 						.GetCustomAttributes(typeof(CustomInitializationOrderAttribute), false)
@@ -63,14 +63,14 @@ namespace OSMLS.Services
 				// Writes initialization order.
 				Console.WriteLine($"{moduleTypesToOrder[type]}: {type.Name} initialization started.");
 
-				InternalModules[type].Initialize(_OsmFilePath, InternalModules, _MapObjects);
+				TypesToModules[type].Initialize(_OsmFilePath, TypesToModules, _MapObjects);
 			}
 		}
 
 		public Task StartAsync(CancellationToken cancellationToken)
 		{
-			IsStopped = false;
 			InitializeModules();
+			IsStopped = false;
 			_Timer = new Timer(Update, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(50));
 
 			TimeNow.Start();
@@ -80,7 +80,7 @@ namespace OSMLS.Services
 
 		private void Update(object state)
 		{
-			foreach (var module in InternalModules.Values)
+			foreach (var module in TypesToModules.Values)
 			{
 				if (IsPaused)
 					return;

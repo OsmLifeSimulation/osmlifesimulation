@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using NetTopologySuite.Geometries;
-using OSMLSGlobalLibrary;
 
 namespace OSMLS.Model
 {
-	internal class MapObjectsCollection : IInheritanceTreeCollection<Geometry>
+	public class MapObjectsCollection : IMapObjectsCollection
 	{
 		private readonly Type _ItemsType;
 		private readonly HashSet<Geometry> _Items = new();
@@ -34,14 +33,17 @@ namespace OSMLS.Model
 			return resultType;
 		}
 
-		public List<(Type type, List<Geometry> mapObjects)> GetTypeItems()
+		public IDictionary<Type, List<Geometry>> GetTypeItems()
 		{
 			lock (_SynchronizationLock)
 			{
-				var typeItems = new List<(Type type, HashSet<Geometry>)>();
+				var typeItems = new List<(Type type, HashSet<Geometry> items)>();
 				GetTypeItems(typeItems);
 
-				return typeItems.Select(x => (x.Item1, x.Item2.ToList())).ToList();
+				return typeItems.ToDictionary(typesToItems =>
+						typesToItems.type,
+					typesToItems => typesToItems.items.ToList()
+				);
 			}
 		}
 

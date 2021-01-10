@@ -8,12 +8,12 @@ namespace OSMLS.Controllers
 	[Route("[controller]")]
 	public class AssembliesController : ControllerBase
 	{
-		public AssembliesController(ModulesLibrary modulesLibrary)
+		public AssembliesController(IModulesLibrary modulesLibrary)
 		{
 			_ModulesLibrary = modulesLibrary;
 		}
 		
-		private readonly ModulesLibrary _ModulesLibrary;
+		private readonly IModulesLibrary _ModulesLibrary;
 
 		[HttpPost]
 		public void PostAssembly(IFormFile assembly) => 

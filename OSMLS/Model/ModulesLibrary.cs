@@ -7,22 +7,22 @@ using OSMLSGlobalLibrary.Modules;
 
 namespace OSMLS.Model
 {
-	public class ModulesLibrary
+	public class ModulesLibrary : IModulesLibrary
 	{
-		public List<Type> ModulesTypes { get; } = new();
+		public IEnumerable<Type> ModulesTypes { get; private set; } = new List<Type>();
 
-		public static Type GetType(string name) => AssemblyLoadContext.Default.Assemblies
+		public Type GetType(string name) => AssemblyLoadContext.Default.Assemblies
 			.Select(assembly => assembly.GetType(name)).First(type => type != null);
 
 		public void LoadModules(Stream assemblyStream)
 		{
 			var assembly = AssemblyLoadContext.Default.LoadFromStream(assemblyStream);
 
-			ModulesTypes.AddRange(
-				assembly
+			var modulesTypes = assembly
 				.GetExportedTypes()
-				.Where(type => type.IsSubclassOf(typeof(OSMLSModule)))
-			);
+				.Where(type => type.IsSubclassOf(typeof(OSMLSModule)));
+
+			ModulesTypes = ModulesTypes.Concat(modulesTypes);
 		}
 	}
 }
