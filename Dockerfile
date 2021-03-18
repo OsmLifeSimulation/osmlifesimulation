@@ -6,11 +6,13 @@ WORKDIR /source
 COPY *.sln .
 COPY OSMLS/*.csproj ./OSMLS/
 COPY OSMLSGlobalLibrary/*.csproj ./OSMLSGlobalLibrary/
+COPY OSMLS.Tests/*.csproj ./OSMLS.Tests/
 RUN dotnet restore
 
 # copy everything else
 COPY OSMLS/. ./OSMLS/
 COPY OSMLSGlobalLibrary/. ./OSMLSGlobalLibrary/
+COPY OSMLS.Tests/. ./OSMLS.Tests/
 WORKDIR /source/OSMLS
 
 # build app
