@@ -58,7 +58,6 @@ namespace OSMLS
 			app.UseSwaggerUI(options =>
 			{
 				options.SwaggerEndpoint("/swagger/v1/swagger.json", "OSMLS API V1");
-				options.RoutePrefix = string.Empty;
 			});
 
 			if (env.IsDevelopment())
@@ -69,6 +68,8 @@ namespace OSMLS
 			app.UseRouting();
 
 			app.UseGrpcWeb();
+
+			app.UseStaticFiles();
 
 			app.UseCors(AllowAllCorsPolicyName);
 
