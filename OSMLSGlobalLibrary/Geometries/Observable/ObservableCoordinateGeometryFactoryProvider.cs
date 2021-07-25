@@ -8,7 +8,7 @@ namespace OSMLSGlobalLibrary.Geometries.Observable
 		public static readonly GeometryFactory Instance = new GeometryFactory(
 			new PrecisionModel(),
 			0,
-			ObservableArraySequenceFactory.Instance
+			ObservableCoordinateSequenceFactory.Instance
 		);
 	}
 }

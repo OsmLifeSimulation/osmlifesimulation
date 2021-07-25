@@ -7,17 +7,17 @@ namespace OSMLSGlobalLibrary.Geometries.Observable.Implementation
 	/// Creates CoordinateSequences represented as an array of Coordinates.
 	/// </summary>
 	[Serializable]
-	internal sealed class ObservableArraySequenceFactory : CoordinateSequenceFactory
+	internal sealed class ObservableCoordinateSequenceFactory : CoordinateSequenceFactory
 	{
-		private ObservableArraySequenceFactory() : base(Ordinates.XYZM)
+		private ObservableCoordinateSequenceFactory() : base(Ordinates.XYZM)
 		{
 		}
 
 		/// <summary>
 		/// Returns the singleton instance of NotifyingOnChangeCoordinateArraySequenceFactory.
 		/// </summary>
-		public static ObservableArraySequenceFactory Instance { get; } =
-			new ObservableArraySequenceFactory();
+		public static ObservableCoordinateSequenceFactory Instance { get; } =
+			new ObservableCoordinateSequenceFactory();
 
 		/// <summary>
 		///  Returns a NotifyingOnChangeCoordinateArraySequence based on the given array (the array is not copied).
