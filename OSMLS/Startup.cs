@@ -6,9 +6,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetTopologySuite.Geometries;
+using OSMLS.Map.Features;
+using OSMLS.Map.Features.Metadata;
+using OSMLS.Map.Features.Properties;
 using OSMLS.Model;
 using OSMLS.Services;
 using OSMLSGlobalLibrary;
+using MapService = OSMLS.Services.MapService;
 
 namespace OSMLS
 {
@@ -29,9 +33,24 @@ namespace OSMLS
 
 			Directory.CreateDirectory(settingsDirectoryPath);
 
-			services.AddSingleton<IModulesLibrary, ModulesLibrary>();
+			services.AddSingleton<ModulesLibrary>();
+			services.AddSingleton<IModulesLibrary>(serviceProvider =>
+				serviceProvider.GetRequiredService<ModulesLibrary>());
+			services.AddSingleton<INotifyAssemblyAdded>(serviceProvider =>
+				serviceProvider.GetRequiredService<ModulesLibrary>());
+
 			services.AddSingleton<IModelService, ModelService>();
 			services.AddHostedService(provider => provider.GetService<IModelService>());
+
+			services.AddSingleton<MapMetadataProvider>();
+			services.AddSingleton<IMapFeaturesMetadataProvider>(serviceProvider =>
+				serviceProvider.GetRequiredService<MapMetadataProvider>());
+			services.AddSingleton<IObservablePropertiesMetadataProvider>(serviceProvider =>
+				serviceProvider.GetRequiredService<MapMetadataProvider>());
+
+			services.AddSingleton<IMapFeaturesProvider, MapFeaturesProvider>();
+
+			services.AddSingleton<IMapFeaturesObservablePropertiesProvider, MapFeaturesObservablePropertiesProvider>();
 
 			services.AddGrpc();
 			services.AddControllers().AddJsonOptions(options =>
@@ -55,10 +74,7 @@ namespace OSMLS
 		{
 			app.UseSwagger();
 
-			app.UseSwaggerUI(options =>
-			{
-				options.SwaggerEndpoint("/swagger/v1/swagger.json", "OSMLS API V1");
-			});
+			app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "OSMLS API V1"); });
 
 			if (env.IsDevelopment())
 			{

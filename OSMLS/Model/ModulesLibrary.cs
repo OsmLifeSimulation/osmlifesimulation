@@ -7,8 +7,10 @@ using OSMLSGlobalLibrary.Modules;
 
 namespace OSMLS.Model
 {
-	public class ModulesLibrary : IModulesLibrary
+	public class ModulesLibrary : IModulesLibrary, INotifyAssemblyAdded
 	{
+		public event INotifyAssemblyAdded.AssemblyAddedEventHandler AssemblyAdded = delegate { };
+
 		public IEnumerable<Type> ModulesTypes { get; private set; } = new List<Type>();
 
 		public Type GetType(string name) => AssemblyLoadContext.Default.Assemblies
@@ -23,6 +25,8 @@ namespace OSMLS.Model
 				.Where(type => type.IsSubclassOf(typeof(OSMLSModule)));
 
 			ModulesTypes = ModulesTypes.Concat(modulesTypes);
+
+			AssemblyAdded.Invoke(this, new INotifyAssemblyAdded.AssemblyAddedEventArgs(assembly));
 		}
 	}
 }
