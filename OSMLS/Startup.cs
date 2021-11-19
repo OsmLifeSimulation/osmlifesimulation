@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetTopologySuite.Geometries;
-using OSMLS.Map.Features;
-using OSMLS.Map.Features.Metadata;
-using OSMLS.Map.Features.Properties;
+using OSMLS.Map;
+using OSMLS.Map.Metadata;
+using OSMLS.Map.Properties;
 using OSMLS.Model;
 using OSMLS.Services;
 using OSMLSGlobalLibrary;
@@ -40,7 +40,8 @@ namespace OSMLS
 				serviceProvider.GetRequiredService<ModulesLibrary>());
 
 			services.AddSingleton<IModelService, ModelService>();
-			services.AddHostedService(provider => provider.GetService<IModelService>());
+			services.AddHostedService(serviceProvider =>
+				serviceProvider.GetRequiredService<IModelService>());
 
 			services.AddSingleton<MapMetadataProvider>();
 			services.AddSingleton<IMapFeaturesMetadataProvider>(serviceProvider =>

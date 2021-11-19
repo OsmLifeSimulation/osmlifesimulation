@@ -4,9 +4,8 @@ using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using OSMLS.Map;
-using OSMLS.Map.Features;
-using OSMLS.Map.Features.Metadata;
-using OSMLS.Map.Features.Properties;
+using OSMLS.Map.Metadata;
+using OSMLS.Map.Properties;
 using static OSMLS.Map.MapService;
 
 namespace OSMLS.Services

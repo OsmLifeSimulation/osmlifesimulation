@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -19,7 +20,8 @@ namespace OSMLS.Services
 
 		public IList<Type> ModulesTypes { get; } = new List<Type>();
 
-		private Dictionary<Type, OSMLSModule> TypesToModules { get; set; }
+		public IImmutableDictionary<Type, OSMLSModule> TypesToInitializedModules { get; private set; } = 
+			ImmutableDictionary<Type, OSMLSModule>.Empty;
 
 		private readonly string _OsmFilePath = $"{AppContext.BaseDirectory}/map.osm";
 
@@ -33,14 +35,16 @@ namespace OSMLS.Services
 
 		private readonly IInheritanceTreeCollection<Geometry> _MapObjects;
 
+		public event INotifyModuleInitialized.ModuleInitializedEventHandler ModuleInitialized = delegate { };
+
 		private void InitializeModules()
 		{
-			TypesToModules = ModulesTypes.ToDictionary(
+			TypesToInitializedModules = ModulesTypes.ToDictionary(
 				moduleType => moduleType,
 				moduleType => (OSMLSModule) Activator.CreateInstance(moduleType)
-			);
+			).ToImmutableDictionary();
 
-			var moduleTypesToOrder = TypesToModules.Keys.ToDictionary(type => type, type =>
+			var moduleTypesToOrder = TypesToInitializedModules.Keys.ToDictionary(type => type, type =>
 				{
 					var initializationOrderAttribute = (CustomInitializationOrderAttribute) type
 						.GetCustomAttributes(typeof(CustomInitializationOrderAttribute), false)
@@ -63,7 +67,9 @@ namespace OSMLS.Services
 				// Writes initialization order.
 				Console.WriteLine($"{moduleTypesToOrder[type]}: {type.Name} initialization started.");
 
-				TypesToModules[type].Initialize(_OsmFilePath, TypesToModules, _MapObjects);
+				var module = TypesToInitializedModules[type];
+				module.Initialize(_OsmFilePath, TypesToInitializedModules, _MapObjects);
+				ModuleInitialized.Invoke(this, new INotifyModuleInitialized.ModuleInitializedEventArgs(module));
 			}
 		}
 
@@ -80,7 +86,7 @@ namespace OSMLS.Services
 
 		private void Update(object state)
 		{
-			foreach (var module in TypesToModules.Values)
+			foreach (var module in TypesToInitializedModules.Values)
 			{
 				if (IsPaused)
 					return;
@@ -95,6 +101,7 @@ namespace OSMLS.Services
 			IsStopped = true;
 
 			_MapObjects.GetAll<Geometry>().ForEach(geometry => _MapObjects.Remove(geometry));
+			TypesToInitializedModules = ImmutableDictionary<Type, OSMLSModule>.Empty;
 
 			return Task.CompletedTask;
 		}
