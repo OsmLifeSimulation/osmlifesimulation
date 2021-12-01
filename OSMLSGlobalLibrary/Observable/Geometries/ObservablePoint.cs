@@ -17,10 +17,6 @@ namespace OSMLSGlobalLibrary.Observable.Geometries
 				(sender, args) => CoordinatesChanged.Invoke(this, EventArgs.Empty);
 		}
 
-		// public PointActor(double x, double y, double z) : this(new CoordinateZ(x, y, z))
-		// {
-		// }
-
 		public ObservablePoint(double x, double y) : this(new Coordinate(x, y))
 		{
 		}

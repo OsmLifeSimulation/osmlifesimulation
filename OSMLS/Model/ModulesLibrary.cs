@@ -16,7 +16,7 @@ namespace OSMLS.Model
 		public Type GetType(string name) => AssemblyLoadContext.Default.Assemblies
 			.Select(assembly => assembly.GetType(name)).First(type => type != null);
 
-		public void LoadModules(Stream assemblyStream)
+		public virtual void LoadModules(Stream assemblyStream)
 		{
 			var assembly = AssemblyLoadContext.Default.LoadFromStream(assemblyStream);
 
