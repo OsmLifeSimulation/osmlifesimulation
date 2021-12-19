@@ -32,7 +32,7 @@ RUN cp ./proto/bin/protoc ${BASE}/bin/
 RUN cp -R ./proto/include/* ${BASE}/include/
 
 RUN npm --global config set user root && npm --global install protoc-gen-ts && npm --global install ng-openapi-gen
-RUN git clone https://github.com/Distera/OSMLS-Frontend frontend
+RUN git clone --branch 21.03a https://github.com/Distera/OSMLS-Frontend frontend
 RUN cd frontend && npm install && npm run-script generate-linux && npm run-script build
 
 # final stage/image
