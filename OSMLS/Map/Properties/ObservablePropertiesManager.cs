@@ -23,7 +23,7 @@ namespace OSMLS.Map.Properties
 				.ToImmutableDictionary(
 					propertyInfo => propertyInfo,
 					propertyInfo =>
-						(ObservablePropertyAttribute) propertyInfo.GetCustomAttribute(
+						(ObservablePropertyAttribute)propertyInfo.GetCustomAttribute(
 							typeof(ObservablePropertyAttribute))
 				);
 
@@ -48,15 +48,15 @@ namespace OSMLS.Map.Properties
 			TypesToObservablePropertiesTypes =
 				new Dictionary<Type, MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType>
 				{
-					{typeof(double), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Double},
-					{typeof(float), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Float},
-					{typeof(int), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Int32},
-					{typeof(long), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Int64},
-					{typeof(uint), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Uint32},
-					{typeof(ulong), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Uint64},
-					{typeof(bool), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Bool},
-					{typeof(string), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.String},
-					{typeof(ByteString), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Bytes}
+					{ typeof(double), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Double },
+					{ typeof(float), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Float },
+					{ typeof(int), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Int32 },
+					{ typeof(long), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Int64 },
+					{ typeof(uint), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Uint32 },
+					{ typeof(ulong), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Uint64 },
+					{ typeof(bool), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Bool },
+					{ typeof(string), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.String },
+					{ typeof(ByteString), MapFeaturesMetadata.Types.ObservablePropertyMetadata.Types.ValueType.Bytes }
 				}.ToImmutableDictionary();
 
 		public IEnumerable<MapFeaturesMetadata.Types.ObservablePropertyMetadata> GetAllObservablePropertiesMetadata() =>
@@ -79,14 +79,19 @@ namespace OSMLS.Map.Properties
 					GetObservableProperty(obj, propertyInfoToAttribute.Key, propertyInfoToAttribute.Value)
 			);
 
-		public ObservableProperty TryGetObservableProperty(object obj, string propertyName) =>
-			_ObservablePropertiesNamesToInfo.TryGetValue(propertyName, out var propertyInfo)
-				? GetObservableProperty(
-					obj,
-					propertyInfo,
-					_ObservablePropertiesInfoToAttributes[propertyInfo]
-				)
-				: null;
+		public bool IsPropertyObservable(string propertyName) =>
+			_ObservablePropertiesNamesToInfo.ContainsKey(propertyName);
+
+		public ObservableProperty GetObservableProperty(object obj, string propertyName)
+		{
+			var propertyInfo = _ObservablePropertiesNamesToInfo[propertyName];
+
+			return GetObservableProperty(
+				obj,
+				propertyInfo,
+				_ObservablePropertiesInfoToAttributes[propertyInfo]
+			);
+		}
 
 		private static ObservableProperty GetObservableProperty(
 			object obj,

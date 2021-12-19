@@ -31,14 +31,19 @@ namespace OSMLS.Map.Properties
 				void PropertyChangedEventHandler(object obj, PropertyChangedEventArgs eventArgs)
 				{
 					var type = obj.GetType();
+					var observablePropertiesManager = _ObservablePropertiesMetadataProvider
+						.TypesToObservablePropertiesManagers[type];
+
+					if (!observablePropertiesManager.IsPropertyObservable(eventArgs.PropertyName))
+						return;
+
 					mapFeaturesObservablePropertiesSubject.OnNext(
 						new MapFeatureObservableProperty
 						{
 							TypeFullName = type.FullName,
 							Id = type.FullName,
-							ObservableProperty = _ObservablePropertiesMetadataProvider
-								.TypesToObservablePropertiesManagers[type]
-								.TryGetObservableProperty(obj, eventArgs.PropertyName)
+							ObservableProperty = observablePropertiesManager
+								.GetObservableProperty(obj, eventArgs.PropertyName)
 						}
 					);
 				}
@@ -65,48 +70,54 @@ namespace OSMLS.Map.Properties
 				void PropertyChangedEventHandler(object obj, PropertyChangedEventArgs eventArgs)
 				{
 					var type = obj.GetType();
+					var observablePropertiesManager = _ObservablePropertiesMetadataProvider
+						.TypesToObservablePropertiesManagers[type];
+
+					if (!observablePropertiesManager.IsPropertyObservable(eventArgs.PropertyName))
+						return;
+
 					mapFeaturesObservablePropertiesSubject.OnNext(
 						new MapFeatureObservableProperty
 						{
 							TypeFullName = type.FullName,
 							Id = ((IActor)obj).Id.ToString(),
-							ObservableProperty = _ObservablePropertiesMetadataProvider
-								.TypesToObservablePropertiesManagers[type]
-								.TryGetObservableProperty(obj, eventArgs.PropertyName)
+							ObservableProperty = observablePropertiesManager
+								.GetObservableProperty(obj, eventArgs.PropertyName)
 						}
 					);
 				}
-
-				IActor actor;
 
 				// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 				switch (args.Action)
 				{
 					case NotifyCollectionChangedAction.Add:
-						actor = args.NewItems!.Cast<IActor>().First();
-						actor.PropertyChanged += PropertyChangedEventHandler;
+						foreach (var actor in args.NewItems!.OfType<IActor>())
+						{
+							actor.PropertyChanged += PropertyChangedEventHandler;
 
-						var type = actor.GetType();
-						_ObservablePropertiesMetadataProvider
-							.TypesToObservablePropertiesManagers[type]
-							.GetAllObservableProperties(actor)
-							.Select(observableProperty =>
-								new MapFeatureObservableProperty
-								{
-									TypeFullName = type.FullName,
-									Id = actor.Id.ToString(),
-									ObservableProperty = observableProperty
-								})
-							.ToList()
-							.ForEach(mapFeatureObservableProperty =>
-								mapFeaturesObservablePropertiesSubject.OnNext(mapFeatureObservableProperty)
-							);
-
+							var type = actor.GetType();
+							_ObservablePropertiesMetadataProvider
+								.TypesToObservablePropertiesManagers[type]
+								.GetAllObservableProperties(actor)
+								.Select(observableProperty =>
+									new MapFeatureObservableProperty
+									{
+										TypeFullName = type.FullName,
+										Id = actor.Id.ToString(),
+										ObservableProperty = observableProperty
+									})
+								.ToList()
+								.ForEach(mapFeatureObservableProperty =>
+									mapFeaturesObservablePropertiesSubject.OnNext(mapFeatureObservableProperty)
+								);
+						}
 
 						break;
 					case NotifyCollectionChangedAction.Remove:
-						actor = args.OldItems!.Cast<IActor>().First();
-						actor.PropertyChanged -= PropertyChangedEventHandler;
+						foreach (var actor in args.OldItems!.OfType<IActor>())
+						{
+							actor.PropertyChanged -= PropertyChangedEventHandler;
+						}
 
 						break;
 					default:
@@ -163,8 +174,8 @@ namespace OSMLS.Map.Properties
 			}
 			else
 			{
-				var feature = _MapObjectsCollection.GetAll<Geometry>().First(geometry =>
-					((IActor)geometry).Id.ToString() == mapFeatureObservableProperty.Id);
+				var feature = _MapObjectsCollection.GetAll<Geometry>().OfType<IActor>().First(actor =>
+					actor.Id.ToString() == mapFeatureObservableProperty.Id);
 
 				_ObservablePropertiesMetadataProvider.TypesToObservablePropertiesManagers[feature.GetType()]
 					.SetObservableProperty(feature, mapFeatureObservableProperty.ObservableProperty);

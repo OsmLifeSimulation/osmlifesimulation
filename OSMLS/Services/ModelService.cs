@@ -77,7 +77,7 @@ namespace OSMLS.Services
 		{
 			InitializeModules();
 			IsStopped = false;
-			_Timer = new Timer(Update, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(50));
+			_Timer = new Timer(Update, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
 
 			TimeNow.Start();
 

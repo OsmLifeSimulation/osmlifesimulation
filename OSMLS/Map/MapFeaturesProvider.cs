@@ -31,29 +31,29 @@ namespace OSMLS.Map
 					mapFeaturesSubject.OnNext(GetMapFeature(_GeoJsonWriter, obj));
 				}
 
-				IActor actor;
-
 				// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 				switch (args.Action)
 				{
 					case NotifyCollectionChangedAction.Add:
-						actor = args.NewItems!.Cast<IActor>().First();
+						foreach (var actor in args.NewItems!.OfType<IActor>())
+						{
+							actor.CoordinatesChanged += CoordinatesChangedEventHandler;
 
-						actor.CoordinatesChanged += CoordinatesChangedEventHandler;
-
-						mapFeaturesSubject.OnNext(GetMapFeature(_GeoJsonWriter, actor));
+							mapFeaturesSubject.OnNext(GetMapFeature(_GeoJsonWriter, actor));
+						}
 
 						break;
 					case NotifyCollectionChangedAction.Remove:
-						actor = args.OldItems!.Cast<IActor>().First();
-
-						actor.CoordinatesChanged -= CoordinatesChangedEventHandler;
-
-						removeMapFeatureEventsSubject.OnNext(new RemoveMapFeatureEvent
+						foreach (var actor in args.OldItems!.OfType<IActor>())
 						{
-							TypeFullName = actor.GetType().FullName,
-							Id = actor.Id.ToString()
-						});
+							actor.CoordinatesChanged -= CoordinatesChangedEventHandler;
+
+							removeMapFeatureEventsSubject.OnNext(new RemoveMapFeatureEvent
+							{
+								TypeFullName = actor.GetType().FullName,
+								Id = actor.Id.ToString()
+							});
+						}
 
 						break;
 					default:
@@ -67,7 +67,9 @@ namespace OSMLS.Map
 		private readonly IMapObjectsCollection _MapObjectsCollection;
 
 		public IEnumerable<MapFeature> GetMapFeatures() =>
-			_MapObjectsCollection.GetAll<Geometry>().Select(geometry => GetMapFeature(_GeoJsonWriter, geometry));
+			_MapObjectsCollection.GetAll<Geometry>()
+				.OfType<IActor>()
+				.Select(geometry => GetMapFeature(_GeoJsonWriter, geometry));
 
 		public IObservable<MapFeature> MapFeaturesObservable { get; }
 

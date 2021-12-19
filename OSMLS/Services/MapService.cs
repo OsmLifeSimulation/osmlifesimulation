@@ -29,7 +29,7 @@ namespace OSMLS.Services
 		{
 			var taskCompletionSource = new TaskCompletionSource<bool>();
 			cancellationToken.Register(callback =>
-					((TaskCompletionSource<bool>) callback).SetResult(true),
+					((TaskCompletionSource<bool>)callback).SetResult(true),
 				taskCompletionSource
 			);
 
@@ -46,8 +46,13 @@ namespace OSMLS.Services
 		public override async Task GetMapFeaturesMetadataUpdates(Empty request,
 			IServerStreamWriter<MapFeaturesMetadata> responseStream, ServerCallContext context)
 		{
+			var writeLock = new object();
 			_MapFeaturesMetadataProvider.MapFeaturesMetadataObservable.Subscribe(
-				async onNext => await responseStream.WriteAsync(onNext),
+				onNext =>
+				{
+					lock (writeLock)
+						responseStream.WriteAsync(onNext);
+				},
 				context.CancellationToken);
 
 			await WaitCancellation(context.CancellationToken);
@@ -63,8 +68,13 @@ namespace OSMLS.Services
 		public override async Task GetMapFeaturesUpdates(Empty request, IServerStreamWriter<MapFeature> responseStream,
 			ServerCallContext context)
 		{
+			var writeLock = new object();
 			_MapFeaturesProvider.MapFeaturesObservable.Subscribe(
-				async onNext => await responseStream.WriteAsync(onNext),
+				onNext =>
+				{
+					lock (writeLock)
+						responseStream.WriteAsync(onNext);
+				},
 				context.CancellationToken);
 
 			await WaitCancellation(context.CancellationToken);
@@ -73,8 +83,13 @@ namespace OSMLS.Services
 		public override async Task GetRemoveMapFeatureEventsUpdates(Empty request,
 			IServerStreamWriter<RemoveMapFeatureEvent> responseStream, ServerCallContext context)
 		{
+			var writeLock = new object();
 			_MapFeaturesProvider.RemoveMapFeatureEventsObservable.Subscribe(
-				async onNext => await responseStream.WriteAsync(onNext),
+				onNext =>
+				{
+					lock (writeLock)
+						responseStream.WriteAsync(onNext);
+				},
 				context.CancellationToken);
 
 			await WaitCancellation(context.CancellationToken);
@@ -92,14 +107,20 @@ namespace OSMLS.Services
 			IServerStreamWriter<MapFeatureObservableProperty> responseStream,
 			ServerCallContext context)
 		{
+			var writeLock = new object();
 			_MapFeaturesObservablePropertiesProvider.MapFeaturesObservablePropertiesObservable.Subscribe(
-				async onNext => await responseStream.WriteAsync(onNext),
+				onNext =>
+				{
+					lock (writeLock)
+						responseStream.WriteAsync(onNext);
+				},
 				context.CancellationToken);
 
 			await WaitCancellation(context.CancellationToken);
 		}
 
-		public override Task<Empty> SetMapFeatureObservableProperty(MapFeatureObservableProperty request, ServerCallContext context)
+		public override Task<Empty> SetMapFeatureObservableProperty(MapFeatureObservableProperty request,
+			ServerCallContext context)
 		{
 			_MapFeaturesObservablePropertiesProvider.SetMapFeatureObservableProperty(request);
 
