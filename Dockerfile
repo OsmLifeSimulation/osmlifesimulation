@@ -18,7 +18,7 @@ WORKDIR /source/OSMLS
 # build app
 RUN dotnet publish -c release -o /app
 
-FROM node:latest as frontend
+FROM node:16 as frontend
 WORKDIR /source
 
 # download proto zip
