@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NUnit.Framework;
 using OSMLS.Controllers;
+using OSMLS.Model;
 using OSMLS.Services;
 
 namespace OSMLS.Tests.Controllers
@@ -10,7 +11,7 @@ namespace OSMLS.Tests.Controllers
 		[Test]
 		public void ShouldGetStateProperlyWhenModelServiceIsActive()
 		{
-			var modelServiceMock = new Mock<IModelService>();
+			var modelServiceMock = new Mock<IModelProvider>();
 			modelServiceMock.Setup(modelService => modelService.IsPaused).Returns(false);
 			modelServiceMock.Setup(modelService => modelService.IsStopped).Returns(false);
 
@@ -23,7 +24,7 @@ namespace OSMLS.Tests.Controllers
 		[Test]
 		public void ShouldGetStateProperlyWhenModelServiceIsPaused()
 		{
-			var modelServiceMock = new Mock<IModelService>();
+			var modelServiceMock = new Mock<IModelProvider>();
 			modelServiceMock.Setup(modelService => modelService.IsPaused).Returns(true);
 			modelServiceMock.Setup(modelService => modelService.IsStopped).Returns(false);
 
@@ -36,7 +37,7 @@ namespace OSMLS.Tests.Controllers
 		[Test]
 		public void ShouldGetStateProperlyWhenModelServiceIsStopped()
 		{
-			var modelServiceMock = new Mock<IModelService>();
+			var modelServiceMock = new Mock<IModelProvider>();
 			modelServiceMock.Setup(modelService => modelService.IsPaused).Returns(false);
 			modelServiceMock.Setup(modelService => modelService.IsStopped).Returns(true);
 
@@ -49,7 +50,7 @@ namespace OSMLS.Tests.Controllers
 		[Test]
 		public void ShouldGetStateProperlyWhenModelServiceIsPausedAndStopped()
 		{
-			var modelServiceMock = new Mock<IModelService>();
+			var modelServiceMock = new Mock<IModelProvider>();
 			modelServiceMock.Setup(modelService => modelService.IsPaused).Returns(true);
 			modelServiceMock.Setup(modelService => modelService.IsStopped).Returns(true);
 
@@ -62,7 +63,7 @@ namespace OSMLS.Tests.Controllers
 		[Test]
 		public void ShouldPutActiveStateProperlyWhenModelServiceIsStopped()
 		{
-			var modelServiceMock = new Mock<IModelService>();
+			var modelServiceMock = new Mock<IModelProvider>();
 
 			modelServiceMock.Setup(modelService => modelService.StartAsync(default)).Verifiable();
 			modelServiceMock.SetupSet(modelService => modelService.IsPaused = false).Verifiable();
@@ -87,7 +88,7 @@ namespace OSMLS.Tests.Controllers
 		[Test]
 		public void ShouldPutActiveStateProperlyWhenModelServiceIsActiveOrPaused()
 		{
-			var modelServiceMock = new Mock<IModelService>();
+			var modelServiceMock = new Mock<IModelProvider>();
 
 			modelServiceMock.SetupSet(modelService => modelService.IsPaused = false).Verifiable();
 
@@ -105,7 +106,7 @@ namespace OSMLS.Tests.Controllers
 		[Test]
 		public void ShouldPutPausedStateProperly()
 		{
-			var modelServiceMock = new Mock<IModelService>();
+			var modelServiceMock = new Mock<IModelProvider>();
 
 			modelServiceMock.SetupSet(modelService => modelService.IsPaused = true).Verifiable();
 
@@ -121,7 +122,7 @@ namespace OSMLS.Tests.Controllers
 		[Test]
 		public void ShouldPutStoppedStateProperly()
 		{
-			var modelServiceMock = new Mock<IModelService>();
+			var modelServiceMock = new Mock<IModelProvider>();
 
 			modelServiceMock.Setup(modelService => modelService.StopAsync(default)).Verifiable();
 

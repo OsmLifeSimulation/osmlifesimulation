@@ -1,16 +1,21 @@
 using System;
 using System.IO;
+using System.Runtime.Loader;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetTopologySuite.Geometries;
+using OSMLS.Features;
+using OSMLS.Features.Metadata;
+using OSMLS.Features.Properties;
 using OSMLS.Map;
-using OSMLS.Map.Metadata;
-using OSMLS.Map.Properties;
 using OSMLS.Model;
+using OSMLS.Model.Modules;
+using OSMLS.Model.Objects;
 using OSMLS.Services;
+using OSMLS.Types;
 using OSMLSGlobalLibrary;
 using MapService = OSMLS.Services.MapService;
 
@@ -33,15 +38,19 @@ namespace OSMLS
 
 			Directory.CreateDirectory(settingsDirectoryPath);
 
+			services.AddSingleton(new InjectedTypesProvider(AssemblyLoadContext.Default));
+			services.AddSingleton<IAssemblyLoader>(serviceProvider =>
+				serviceProvider.GetRequiredService<InjectedTypesProvider>());
+			services.AddSingleton<IInjectedTypesProvider>(serviceProvider =>
+				serviceProvider.GetRequiredService<InjectedTypesProvider>());
+
 			services.AddSingleton<ModulesLibrary>();
 			services.AddSingleton<IModulesLibrary>(serviceProvider =>
 				serviceProvider.GetRequiredService<ModulesLibrary>());
-			services.AddSingleton<INotifyAssemblyAdded>(serviceProvider =>
-				serviceProvider.GetRequiredService<ModulesLibrary>());
 
-			services.AddSingleton<IModelService, ModelService>();
+			services.AddSingleton<IModelProvider, ModelProvider>();
 			services.AddHostedService(serviceProvider =>
-				serviceProvider.GetRequiredService<IModelService>());
+				serviceProvider.GetRequiredService<IModelProvider>());
 
 			services.AddSingleton<MapMetadataProvider>();
 			services.AddSingleton<IMapFeaturesMetadataProvider>(serviceProvider =>

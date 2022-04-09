@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OSMLS.Model;
+using OSMLS.Types;
 
 namespace OSMLS.Controllers
 {
@@ -8,15 +9,15 @@ namespace OSMLS.Controllers
 	[Route("[controller]")]
 	public class AssembliesController : ControllerBase
 	{
-		public AssembliesController(IModulesLibrary modulesLibrary)
+		public AssembliesController(IAssemblyLoader assemblyLoader)
 		{
-			_ModulesLibrary = modulesLibrary;
+			_AssemblyLoader = assemblyLoader;
 		}
-		
-		private readonly IModulesLibrary _ModulesLibrary;
+
+		private readonly IAssemblyLoader _AssemblyLoader;
 
 		[HttpPost]
 		public void PostAssembly(IFormFile assembly) => 
-			_ModulesLibrary.LoadModules(assembly.OpenReadStream());
+			_AssemblyLoader.LoadAssembly(assembly.OpenReadStream());
 	}
 }

@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using OSMLS.Model;
 using OSMLS.Services;
 
 namespace OSMLS.Controllers
@@ -17,44 +18,42 @@ namespace OSMLS.Controllers
 			Stopped
 		}
 
-		public StateController(IModelService modelService)
+		public StateController(IModelProvider modelProvider)
 		{
-			_ModelService = modelService;
+			_ModelProvider = modelProvider;
 		}
 
-		private readonly IModelService _ModelService;
+		private readonly IModelProvider _ModelProvider;
 
 		[HttpGet]
 		public State GetState() =>
-			_ModelService.IsStopped ? State.Stopped :
-			_ModelService.IsPaused ? State.Paused :
+			_ModelProvider.IsStopped ? State.Stopped :
+			_ModelProvider.IsPaused ? State.Paused :
 			State.Active;
 
 		[HttpPut]
 		public async Task PutState(State state, CancellationToken cancellationToken = default)
 		{
+			// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 			switch (state)
 			{
 				case State.Active:
-					if (_ModelService.IsStopped)
-						await _ModelService.StartAsync(cancellationToken);
+					if (_ModelProvider.IsStopped)
+						await _ModelProvider.StartAsync(cancellationToken);
 
-					_ModelService.IsPaused = false;
+					_ModelProvider.IsPaused = false;
 
 					break;
 
 				case State.Paused:
-					_ModelService.IsPaused = true;
+					_ModelProvider.IsPaused = true;
 
 					break;
 
 				case State.Stopped:
-					await _ModelService.StopAsync(cancellationToken);
+					await _ModelProvider.StopAsync(cancellationToken);
 
 					break;
-
-				default:
-					throw new ArgumentOutOfRangeException(nameof(state), state, null);
 			}
 		}
 	}

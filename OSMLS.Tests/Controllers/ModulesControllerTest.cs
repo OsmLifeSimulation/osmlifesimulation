@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
 using OSMLS.Controllers;
 using OSMLS.Model;
+using OSMLS.Model.Modules;
 using OSMLS.Services;
+using OSMLS.Types.Model;
 
 namespace OSMLS.Tests.Controllers
 {
 	public class ModulesControllerTest
 	{
-		private IList<Type> ComposeTestModulesTypes() =>
-			new List<Type> {typeof(string), typeof(int), typeof(ModulesControllerTest)};
+		private IList<IInjectedModuleType> ComposeTestModulesTypes() =>
+			new List<IInjectedModuleType> {new Mock<IInjectedModuleType>().Object};
 
 		[Test]
 		public void ShouldGetModulesProperly()
@@ -31,20 +32,20 @@ namespace OSMLS.Tests.Controllers
 		[Test]
 		public void ShouldPostModelModuleProperly()
 		{
-			var testModuleType = typeof(string);
+			var testModuleType = new Mock<IInjectedModuleType>().Object;
 			var testModuleTypeName = testModuleType.FullName;
 
 			var modulesLibraryMock = new Mock<IModulesLibrary>();
 			modulesLibraryMock
-				.Setup(modulesLibrary => modulesLibrary.GetType(testModuleTypeName))
+				.Setup(modulesLibrary => modulesLibrary.GetModuleType(testModuleTypeName))
 				.Returns(testModuleType);
 
-			var modelServiceModulesMock = new Mock<IList<Type>>();
+			var modelServiceModulesMock = new Mock<IList<IInjectedModuleType>>();
 			modelServiceModulesMock
 				.Setup(modelServiceModules => modelServiceModules.Add(testModuleType))
 				.Verifiable();
 
-			var modelServiceMock = new Mock<IModelService>();
+			var modelServiceMock = new Mock<IModelProvider>();
 			modelServiceMock
 				.Setup(modelService => modelService.ModulesTypes)
 				.Returns(modelServiceModulesMock.Object);
@@ -63,7 +64,7 @@ namespace OSMLS.Tests.Controllers
 		{
 			var testModulesTypes = ComposeTestModulesTypes();
 
-			var modelServiceMock = new Mock<IModelService>();
+			var modelServiceMock = new Mock<IModelProvider>();
 			modelServiceMock.Setup(modulesLibrary => modulesLibrary.ModulesTypes).Returns(testModulesTypes);
 
 			var modulesController = new ModulesController(null, modelServiceMock.Object);
@@ -75,20 +76,20 @@ namespace OSMLS.Tests.Controllers
 		[Test]
 		public void ShouldDeleteModelModuleProperly()
 		{
-			var testModuleType = typeof(string);
+			var testModuleType = new Mock<IInjectedModuleType>().Object;
 			var testModuleTypeName = testModuleType.FullName;
 
 			var modulesLibraryMock = new Mock<IModulesLibrary>();
 			modulesLibraryMock
-				.Setup(modulesLibrary => modulesLibrary.GetType(testModuleTypeName))
+				.Setup(modulesLibrary => modulesLibrary.GetModuleType(testModuleTypeName))
 				.Returns(testModuleType);
 
-			var modelServiceModulesMock = new Mock<IList<Type>>();
+			var modelServiceModulesMock = new Mock<IList<IInjectedModuleType>>();
 			modelServiceModulesMock
 				.Setup(modelServiceModules => modelServiceModules.Remove(testModuleType))
 				.Verifiable();
 
-			var modelServiceMock = new Mock<IModelService>();
+			var modelServiceMock = new Mock<IModelProvider>();
 			modelServiceMock
 				.Setup(modelService => modelService.ModulesTypes)
 				.Returns(modelServiceModulesMock.Object);

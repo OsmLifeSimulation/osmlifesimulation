@@ -3,26 +3,28 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using OSMLS.Features;
+using OSMLS.Features.Metadata;
+using OSMLS.Features.Properties;
 using OSMLS.Map;
-using OSMLS.Map.Metadata;
-using OSMLS.Map.Properties;
 using static OSMLS.Map.MapService;
 
 namespace OSMLS.Services
 {
-	internal class MapService : MapServiceBase
+	public class MapService : MapServiceBase
 	{
-		public MapService(IMapFeaturesProvider mapFeaturesProvider,
+		public MapService(
 			IMapFeaturesMetadataProvider mapFeaturesMetadataProvider,
+			IMapFeaturesProvider mapFeaturesProvider,
 			IMapFeaturesObservablePropertiesProvider mapFeaturesObservablePropertiesProvider)
 		{
-			_MapFeaturesProvider = mapFeaturesProvider;
 			_MapFeaturesMetadataProvider = mapFeaturesMetadataProvider;
+			_MapFeaturesProvider = mapFeaturesProvider;
 			_MapFeaturesObservablePropertiesProvider = mapFeaturesObservablePropertiesProvider;
 		}
 
-		private readonly IMapFeaturesProvider _MapFeaturesProvider;
 		private readonly IMapFeaturesMetadataProvider _MapFeaturesMetadataProvider;
+		private readonly IMapFeaturesProvider _MapFeaturesProvider;
 		private readonly IMapFeaturesObservablePropertiesProvider _MapFeaturesObservablePropertiesProvider;
 
 		private static async Task WaitCancellation(CancellationToken cancellationToken)
@@ -99,7 +101,7 @@ namespace OSMLS.Services
 			IServerStreamWriter<MapFeatureObservableProperty> responseStream, ServerCallContext context)
 		{
 			foreach (var mapFeatureObservableProperty in
-				_MapFeaturesObservablePropertiesProvider.GetMapFeaturesObservableProperties())
+			         _MapFeaturesObservablePropertiesProvider.GetMapFeaturesObservableProperties())
 				await responseStream.WriteAsync(mapFeatureObservableProperty);
 		}
 
