@@ -27,4 +27,4 @@ COPY --from=build /app ./
 ENTRYPOINT ["dotnet", "OSMLS.dll"]
 
 # add map
-ADD https://www.openstreetmap.org/api/0.6/map?bbox=37.4622%2C55.7472%2C37.5193%2C55.7695 ./map.osm
+ADD https://www.openstreetmap.org/api/0.6/map?bbox=37.6269900%2C55.7407400%2C37.6298500%2C55.7419200 ./map.osm
