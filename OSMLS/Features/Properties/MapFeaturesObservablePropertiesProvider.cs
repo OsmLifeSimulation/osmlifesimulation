@@ -145,13 +145,14 @@ namespace OSMLS.Features.Properties
 				.Concat(
 					_MapObjectsCollection
 						.GetAll<Geometry>()
+						.OfType<IActor>()
 						.SelectMany(geometry => _ObservablePropertiesMetadataProvider
 							.TypesToObservablePropertiesManagers[geometry.GetType()]
 							.GetAllObservableProperties(geometry)
 							.Select(observableProperty => new MapFeatureObservableProperty
 							{
 								TypeFullName = geometry.GetType().FullName,
-								Id = ((IActor)geometry).Id.ToString(),
+								Id = geometry.Id.ToString(),
 								ObservableProperty = observableProperty
 							})
 						)
