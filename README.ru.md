@@ -1,6 +1,6 @@
 ```mermaid
 sequenceDiagram
-    participant Frontend as Панель администрирования
+    participant Frontend as Система администрирования
     participant Backend as Платформа моделирования
     participant Modules as Модули
 
@@ -35,20 +35,32 @@ sequenceDiagram
     deactivate Backend
 ```
 
-```puml
-skinparam monochrome true
-skinparam shadowing false
-left to right direction
+```mermaid
+sequenceDiagram
+    participant Frontend1 as Система администрирования 1
+    participant Frontend2 as Система администрирования 2
+    participant Backend as Платформа моделирования
+    participant Actor as Актор
 
-Пользователь --> (Принятие решения на основе моделирования)
-(Принятие решения на основе моделирования) ..> (Просмотр свойств модели и акторов) : <<include>>
-(Просмотр графических отчетов на основе свойств) ..> (Просмотр свойств модели и акторов) : <<extend>>
+    Frontend1 -) Backend: Изменение свойства актора
+    alt Свойство является изменяемым
+        Backend -) Actor: Изменение свойства актора
+        Actor -) Backend: Событие изменения свойства актора
+        Backend -) Frontend1: Событие изменения свойства актора
+        Backend -) Frontend2: Событие изменения свойства актора
+    end
+```
 
-(Конфигурирование модели) ..> (Принятие решения на основе моделирования) : <<extend>>
-(Конфигурирование модели) ..> (Добавление сборок) : <<include>>
-(Конфигурирование модели) ..> (Выбор модулей, участвующих в моделировании) : <<include>>
-(Конфигурирование модели) ..> (Управление жизненным циклом моделирования) : <<include>>
-(Конфигурирование модели) ..> (Изменение свойст модели и акторов) : <<include>>
+```mermaid
+sequenceDiagram
+    participant Frontend as Система администрирования
+    participant Backend as Платформа моделирования
+    participant Module as Module
+    participant Actor as Актор
+
+    Module -) Actor: Изменение свойства актора
+    Actor -) Backend: Событие изменения свойства актора
+    Backend -) Frontend: Событие изменения свойства актора
 ```
 
 ```puml
