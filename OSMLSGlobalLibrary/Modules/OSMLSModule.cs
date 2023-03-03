@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.ComponentModel;
 using NetTopologySuite.Geometries;
 
 namespace OSMLSGlobalLibrary.Modules
@@ -7,8 +8,10 @@ namespace OSMLSGlobalLibrary.Modules
 	/// <summary>
 	/// Module class. All modules must be inherited from this class to interact with the main program.
 	/// </summary>
-	public abstract class OSMLSModule
+	public abstract class OSMLSModule : IModule
 	{
+		public virtual event PropertyChangedEventHandler PropertyChanged;
+
 		/// <summary>
 		/// Path to the OSM XML file. It is agreed that within the map section described in this file, modeling should take place.
 		/// </summary>
@@ -17,7 +20,7 @@ namespace OSMLSGlobalLibrary.Modules
 		/// <summary>
 		/// A dictionary containing modules by type.
 		/// </summary>
-		private Dictionary<Type, OSMLSModule> _allModules;
+		private IImmutableDictionary<Type, IModule> _allModules;
 
 		/// <summary>
 		/// A collection containing all map objects. Objects from this collection are displayed in browser clients. This collection is one for all modules.
@@ -40,7 +43,7 @@ namespace OSMLSGlobalLibrary.Modules
 		/// <param name="osmFilePath">Path to the OSM XML file.</param>
 		/// <param name="modules">A dictionary containing modules by type.</param>
 		/// <param name="mapObjects">A collection containing all map objects.</param>
-		public void Initialize(string osmFilePath, Dictionary<Type, OSMLSModule> modules,
+		public void Initialize(string osmFilePath, IImmutableDictionary<Type, IModule> modules,
 			IInheritanceTreeCollection<Geometry> mapObjects)
 		{
 			lock (_initializationLock)

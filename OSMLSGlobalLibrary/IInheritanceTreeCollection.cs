@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace OSMLSGlobalLibrary
 {
@@ -7,7 +8,7 @@ namespace OSMLSGlobalLibrary
 	/// Inheritance tree collection
 	/// </summary>
 	/// <typeparam name="TBase"></typeparam>
-	public interface IInheritanceTreeCollection<TBase>
+	public interface IInheritanceTreeCollection<TBase>: INotifyCollectionChanged
 	{
 		/// <summary>
 		/// Gets items of a specific type.

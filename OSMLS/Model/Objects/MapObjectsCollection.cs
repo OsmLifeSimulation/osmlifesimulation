@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using NetTopologySuite.Geometries;
 
-namespace OSMLS.Model
+namespace OSMLS.Model.Objects
 {
 	public class MapObjectsCollection : IMapObjectsCollection
 	{
+		public event NotifyCollectionChangedEventHandler CollectionChanged = delegate { };
+
 		private readonly Type _ItemsType;
 		private readonly HashSet<Geometry> _Items = new();
 
@@ -124,6 +127,9 @@ namespace OSMLS.Model
 
 					_Inheritors[inheritorType].Add(item);
 				}
+
+				CollectionChanged.Invoke(this,
+					new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
 			}
 		}
 
@@ -132,6 +138,9 @@ namespace OSMLS.Model
 			lock (_SynchronizationLock)
 			{
 				GetInternal(item.GetType()).Remove(item);
+
+				CollectionChanged.Invoke(this,
+					new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
 			}
 		}
 	}

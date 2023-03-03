@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NetTopologySuite.Geometries;
 using OSMLSGlobalLibrary;
 
-namespace OSMLS.Model
+namespace OSMLS.Model.Objects
 {
 	public interface IMapObjectsCollection : IInheritanceTreeCollection<Geometry>
 	{

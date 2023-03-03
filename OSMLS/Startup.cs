@@ -1,14 +1,23 @@
 using System;
 using System.IO;
+using System.Runtime.Loader;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetTopologySuite.Geometries;
+using OSMLS.Features;
+using OSMLS.Features.Metadata;
+using OSMLS.Features.Properties;
+using OSMLS.Map;
 using OSMLS.Model;
+using OSMLS.Model.Modules;
+using OSMLS.Model.Objects;
 using OSMLS.Services;
+using OSMLS.Types;
 using OSMLSGlobalLibrary;
+using MapService = OSMLS.Services.MapService;
 
 namespace OSMLS
 {
@@ -29,9 +38,29 @@ namespace OSMLS
 
 			Directory.CreateDirectory(settingsDirectoryPath);
 
-			services.AddSingleton<IModulesLibrary, ModulesLibrary>();
-			services.AddSingleton<IModelService, ModelService>();
-			services.AddHostedService(provider => provider.GetService<IModelService>());
+			services.AddSingleton(new InjectedTypesProvider(AssemblyLoadContext.Default));
+			services.AddSingleton<IAssemblyLoader>(serviceProvider =>
+				serviceProvider.GetRequiredService<InjectedTypesProvider>());
+			services.AddSingleton<IInjectedTypesProvider>(serviceProvider =>
+				serviceProvider.GetRequiredService<InjectedTypesProvider>());
+
+			services.AddSingleton<ModulesLibrary>();
+			services.AddSingleton<IModulesLibrary>(serviceProvider =>
+				serviceProvider.GetRequiredService<ModulesLibrary>());
+
+			services.AddSingleton<IModelProvider, ModelProvider>();
+			services.AddHostedService(serviceProvider =>
+				serviceProvider.GetRequiredService<IModelProvider>());
+
+			services.AddSingleton<MapMetadataProvider>();
+			services.AddSingleton<IMapFeaturesMetadataProvider>(serviceProvider =>
+				serviceProvider.GetRequiredService<MapMetadataProvider>());
+			services.AddSingleton<IObservablePropertiesMetadataProvider>(serviceProvider =>
+				serviceProvider.GetRequiredService<MapMetadataProvider>());
+
+			services.AddSingleton<IMapFeaturesProvider, MapFeaturesProvider>();
+
+			services.AddSingleton<IMapFeaturesObservablePropertiesProvider, MapFeaturesObservablePropertiesProvider>();
 
 			services.AddGrpc();
 			services.AddControllers().AddJsonOptions(options =>
@@ -55,10 +84,7 @@ namespace OSMLS
 		{
 			app.UseSwagger();
 
-			app.UseSwaggerUI(options =>
-			{
-				options.SwaggerEndpoint("/swagger/v1/swagger.json", "OSMLS API V1");
-			});
+			app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "OSMLS API V1"); });
 
 			if (env.IsDevelopment())
 			{

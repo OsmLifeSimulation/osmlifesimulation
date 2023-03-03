@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
 using OSMLS.Controllers;
-using OSMLS.Model;
+using OSMLS.Types;
 
 namespace OSMLS.Tests.Controllers
 {
@@ -18,10 +18,10 @@ namespace OSMLS.Tests.Controllers
 				.Returns(Stream.Null)
 				.Verifiable();
 
-			var modulesLibraryMock = new Mock<IModulesLibrary>();
-			modulesLibraryMock.Setup(modulesLibrary => modulesLibrary.LoadModules(Stream.Null)).Verifiable();
+			var assemblyLoaderMock = new Mock<IAssemblyLoader>();
+			assemblyLoaderMock.Setup(assemblyLoader => assemblyLoader.LoadAssembly(Stream.Null)).Verifiable();
 
-			var assembliesController = new AssembliesController(modulesLibraryMock.Object);
+			var assembliesController = new AssembliesController(assemblyLoaderMock.Object);
 			assembliesController.PostAssembly(assemblyFileMock.Object);
 
 			assemblyFileMock.Verify(assemblyFile =>
@@ -29,8 +29,8 @@ namespace OSMLS.Tests.Controllers
 				Times.Once
 			);
 
-			modulesLibraryMock.Verify(modulesLibrary =>
-					modulesLibrary.LoadModules(Stream.Null),
+			assemblyLoaderMock.Verify(assemblyLoader =>
+					assemblyLoader.LoadAssembly(Stream.Null),
 				Times.Once
 			);
 		}

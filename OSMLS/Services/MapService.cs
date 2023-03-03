@@ -1,79 +1,132 @@
 ﻿using System;
-using System.Linq;
-using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using NetTopologySuite.Features;
-using NetTopologySuite.IO;
+using OSMLS.Features;
+using OSMLS.Features.Metadata;
+using OSMLS.Features.Properties;
 using OSMLS.Map;
-using OSMLS.Model;
-using OSMLSGlobalLibrary.Map;
 using static OSMLS.Map.MapService;
 
 namespace OSMLS.Services
 {
-	internal class MapService : MapServiceBase
+	public class MapService : MapServiceBase
 	{
-		public MapService(IMapObjectsCollection mapObjectsCollection)
+		public MapService(
+			IMapFeaturesMetadataProvider mapFeaturesMetadataProvider,
+			IMapFeaturesProvider mapFeaturesProvider,
+			IMapFeaturesObservablePropertiesProvider mapFeaturesObservablePropertiesProvider)
 		{
-			var geoJsonWriter = new GeoJsonWriter();
-
-			_MapFeaturesClustersObservable =
-				Observable.Timer(TimeSpan.FromMilliseconds(-1), TimeSpan.FromSeconds(1))
-					.Select(
-						_ =>
-						{
-							var mapFeaturesCluster = new MapFeaturesCluster();
-
-							foreach (var (type, mapObjects) in mapObjectsCollection.GetTypeItems())
-							{
-								var openLayersStyle = ((CustomStyleAttribute) type
-									.GetCustomAttributes(typeof(CustomStyleAttribute), false)
-									.FirstOrDefault() ?? new CustomStyleAttribute()).Style;
-
-								if (openLayersStyle == null)
-									continue;
-
-								mapFeaturesCluster.Features.Add(new MapFeature
-								{
-									TypeFullName = type.FullName,
-									FeaturesGeoJson = "{\"type\":\"FeatureCollection\", \"features\":" +
-									                  geoJsonWriter.Write(
-										                  new FeatureCollection().Concat(
-											                  mapObjects
-												                  .Select(
-													                  geometry => new Feature(geometry,
-														                  new AttributesTable())
-												                  ).ToList()
-										                  )
-									                  ) +
-									                  "}",
-									OpenLayersStyle = openLayersStyle
-								});
-							}
-
-							return mapFeaturesCluster;
-						});
+			_MapFeaturesMetadataProvider = mapFeaturesMetadataProvider;
+			_MapFeaturesProvider = mapFeaturesProvider;
+			_MapFeaturesObservablePropertiesProvider = mapFeaturesObservablePropertiesProvider;
 		}
 
-		private readonly IObservable<MapFeaturesCluster> _MapFeaturesClustersObservable;
+		private readonly IMapFeaturesMetadataProvider _MapFeaturesMetadataProvider;
+		private readonly IMapFeaturesProvider _MapFeaturesProvider;
+		private readonly IMapFeaturesObservablePropertiesProvider _MapFeaturesObservablePropertiesProvider;
 
-		public override async Task Updates(Empty request, IServerStreamWriter<MapFeaturesCluster> responseStream,
-			ServerCallContext context)
+		private static async Task WaitCancellation(CancellationToken cancellationToken)
 		{
-			_MapFeaturesClustersObservable.Subscribe(onNext =>
-					responseStream.WriteAsync(onNext),
-				context.CancellationToken
-			);
-
 			var taskCompletionSource = new TaskCompletionSource<bool>();
-			context.CancellationToken.Register(callback =>
-					((TaskCompletionSource<bool>) callback).SetResult(true),
+			cancellationToken.Register(callback =>
+					((TaskCompletionSource<bool>)callback).SetResult(true),
 				taskCompletionSource
 			);
 
 			await taskCompletionSource.Task;
+		}
+
+		public override async Task GetMapFeaturesMetadata(Empty request,
+			IServerStreamWriter<MapFeaturesMetadata> responseStream, ServerCallContext context)
+		{
+			foreach (var mapFeaturesMetadata in _MapFeaturesMetadataProvider.GetMapFeaturesMetadata())
+				await responseStream.WriteAsync(mapFeaturesMetadata);
+		}
+
+		public override async Task GetMapFeaturesMetadataUpdates(Empty request,
+			IServerStreamWriter<MapFeaturesMetadata> responseStream, ServerCallContext context)
+		{
+			var writeLock = new object();
+			_MapFeaturesMetadataProvider.MapFeaturesMetadataObservable.Subscribe(
+				onNext =>
+				{
+					lock (writeLock)
+						responseStream.WriteAsync(onNext);
+				},
+				context.CancellationToken);
+
+			await WaitCancellation(context.CancellationToken);
+		}
+
+		public override async Task GetMapFeatures(Empty request, IServerStreamWriter<MapFeature> responseStream,
+			ServerCallContext context)
+		{
+			foreach (var mapFeature in _MapFeaturesProvider.GetMapFeatures())
+				await responseStream.WriteAsync(mapFeature);
+		}
+
+		public override async Task GetMapFeaturesUpdates(Empty request, IServerStreamWriter<MapFeature> responseStream,
+			ServerCallContext context)
+		{
+			var writeLock = new object();
+			_MapFeaturesProvider.MapFeaturesObservable.Subscribe(
+				onNext =>
+				{
+					lock (writeLock)
+						responseStream.WriteAsync(onNext);
+				},
+				context.CancellationToken);
+
+			await WaitCancellation(context.CancellationToken);
+		}
+
+		public override async Task GetRemoveMapFeatureEventsUpdates(Empty request,
+			IServerStreamWriter<RemoveMapFeatureEvent> responseStream, ServerCallContext context)
+		{
+			var writeLock = new object();
+			_MapFeaturesProvider.RemoveMapFeatureEventsObservable.Subscribe(
+				onNext =>
+				{
+					lock (writeLock)
+						responseStream.WriteAsync(onNext);
+				},
+				context.CancellationToken);
+
+			await WaitCancellation(context.CancellationToken);
+		}
+
+		public override async Task GetMapFeaturesObservableProperties(Empty request,
+			IServerStreamWriter<MapFeatureObservableProperty> responseStream, ServerCallContext context)
+		{
+			foreach (var mapFeatureObservableProperty in
+			         _MapFeaturesObservablePropertiesProvider.GetMapFeaturesObservableProperties())
+				await responseStream.WriteAsync(mapFeatureObservableProperty);
+		}
+
+		public override async Task GetMapFeaturesObservablePropertiesUpdates(Empty request,
+			IServerStreamWriter<MapFeatureObservableProperty> responseStream,
+			ServerCallContext context)
+		{
+			var writeLock = new object();
+			_MapFeaturesObservablePropertiesProvider.MapFeaturesObservablePropertiesObservable.Subscribe(
+				onNext =>
+				{
+					lock (writeLock)
+						responseStream.WriteAsync(onNext);
+				},
+				context.CancellationToken);
+
+			await WaitCancellation(context.CancellationToken);
+		}
+
+		public override Task<Empty> SetMapFeatureObservableProperty(MapFeatureObservableProperty request,
+			ServerCallContext context)
+		{
+			_MapFeaturesObservablePropertiesProvider.SetMapFeatureObservableProperty(request);
+
+			return Task.FromResult(new Empty());
 		}
 	}
 }

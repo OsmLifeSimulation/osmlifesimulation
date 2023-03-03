@@ -3,9 +3,9 @@ using System.Collections.Immutable;
 using System.Linq;
 using NetTopologySuite.Geometries;
 using NUnit.Framework;
-using OSMLS.Model;
+using OSMLS.Model.Objects;
 
-namespace OSMLS.Tests.Model
+namespace OSMLS.Tests.Model.Objects
 {
 	public class MapObjectsCollectionTest
 	{
@@ -40,6 +40,11 @@ namespace OSMLS.Tests.Model
 			);
 
 			CollectionAssert.AreEqual(
+				testPoints,
+				mapObjectsCollection.GetAll<Point>()
+			);
+
+			CollectionAssert.AreEqual(
 				testLineStrings,
 				mapObjectsCollection.Get<LineString>()
 			);
@@ -60,7 +65,7 @@ namespace OSMLS.Tests.Model
 			mapObjectsCollection.Remove(linearStringToRemove);
 
 			CollectionAssert.AreEqual(
-				testGeometries.Except(new[] {pointToRemove, linearStringToRemove}),
+				testGeometries.Except(new[] { pointToRemove, linearStringToRemove }),
 				mapObjectsCollection.GetAll<Geometry>()
 			);
 		}

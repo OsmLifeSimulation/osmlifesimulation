@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using OSMLS.Model;
+using OSMLS.Model.Modules;
 using OSMLS.Services;
 
 namespace OSMLS.Controllers
@@ -10,14 +11,14 @@ namespace OSMLS.Controllers
 	[Route("[controller]")]
 	public class ModulesController
 	{
-		public ModulesController(IModulesLibrary modulesLibrary, IModelService modelService)
+		public ModulesController(IModulesLibrary modulesLibrary, IModelProvider modelProvider)
 		{
 			_ModulesLibrary = modulesLibrary;
-			_ModelService = modelService;
+			_ModelProvider = modelProvider;
 		}
 
 		private readonly IModulesLibrary _ModulesLibrary;
-		private readonly IModelService _ModelService;
+		private readonly IModelProvider _ModelProvider;
 
 		[HttpGet]
 		public IEnumerable<string> GetModules() => _ModulesLibrary.ModulesTypes.Select(type => type.FullName);
@@ -25,15 +26,15 @@ namespace OSMLS.Controllers
 		[HttpPost("Model")]
 		public void PostModelModule(string typeName)
 		{
-			_ModelService.ModulesTypes.Add(_ModulesLibrary.GetType(typeName));
+			_ModelProvider.ModulesTypes.Add(_ModulesLibrary.GetModuleType(typeName));
 		}
 
 		[HttpGet("Model")]
 		public IEnumerable<string> GetModelModules() =>
-			_ModelService.ModulesTypes.Select(type => type.FullName);
+			_ModelProvider.ModulesTypes.Select(type => type.FullName);
 
 		[HttpDelete("Model")]
 		public void DeleteModelModule(string typeName) =>
-			_ModelService.ModulesTypes.Remove(_ModulesLibrary.GetType(typeName));
+			_ModelProvider.ModulesTypes.Remove(_ModulesLibrary.GetModuleType(typeName));
 	}
 }

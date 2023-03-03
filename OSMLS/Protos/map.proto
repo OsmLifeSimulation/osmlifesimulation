@@ -7,15 +7,78 @@ package map;
 import "google/protobuf/empty.proto";
 
 service MapService {
-  rpc Updates (google.protobuf.Empty) returns (stream MapFeaturesCluster);
+  rpc GetMapFeaturesMetadata (google.protobuf.Empty) returns (stream MapFeaturesMetadata);
+  rpc GetMapFeaturesMetadataUpdates (google.protobuf.Empty) returns (stream MapFeaturesMetadata);
+
+  rpc GetMapFeatures (google.protobuf.Empty) returns (stream MapFeature);
+  rpc GetMapFeaturesUpdates (google.protobuf.Empty) returns (stream MapFeature);
+  rpc GetRemoveMapFeatureEventsUpdates (google.protobuf.Empty) returns (stream RemoveMapFeatureEvent);
+
+  rpc GetMapFeaturesObservableProperties (google.protobuf.Empty) returns (stream MapFeatureObservableProperty);
+  rpc GetMapFeaturesObservablePropertiesUpdates (google.protobuf.Empty) returns (stream MapFeatureObservableProperty);
+  rpc SetMapFeatureObservableProperty (MapFeatureObservableProperty) returns (google.protobuf.Empty);
 }
 
-message MapFeaturesCluster {
-  repeated MapFeature features = 1;
+message MapFeaturesMetadata {
+  string type_full_name = 1;
+  string open_layers_style = 2;
+
+  message ObservablePropertyMetadata {
+    string title = 1;
+    bool editable = 2;
+
+    enum ValueType {
+      DOUBLE = 0;
+      FLOAT = 1;
+      INT_32 = 2;
+      INT_64 = 3;
+      UINT_32 = 4;
+      UINT_64 = 5;
+      BOOL = 6;
+      STRING = 7;
+      BYTES = 8;
+    }
+
+    ValueType value_type = 3;
+  }
+
+  repeated ObservablePropertyMetadata observable_properties_metadata = 3;
 }
 
 message MapFeature {
   string type_full_name = 1;
-  string features_geo_json = 2;
-  string open_layers_style = 3;
+  string geo_json = 2;
+}
+
+message RemoveMapFeatureEvent {
+  string type_full_name = 1;
+  string id = 2;
+}
+
+message MapFeatureObservableProperty {
+  string type_full_name = 1;
+  string id = 2;
+
+  ObservableProperty observable_property = 3;
+}
+
+message ObservableProperty {
+  string title = 1;
+
+  ObservablePropertyValue value = 2;
+}
+
+message ObservablePropertyValue {
+  // For explanation see https://developers.google.com/protocol-buffers/docs/proto3#scalar.
+  oneof value {
+    double double = 1; // .NET double.
+    float float = 2; // .NET float.
+    int32 int32 = 3; // .NET int.
+    int64 int64 = 4; // .NET long.
+    uint32 uint32 = 5; // .NET uint.
+    uint64 uint64 = 6; // .NET ulong.
+    bool bool = 7; // .NET bool.
+    string string = 8; // .NET string.
+    bytes bytes = 9; // .NET ByteString.
+  }
 }
